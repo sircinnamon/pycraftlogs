@@ -1,4 +1,5 @@
 import requests
+import sys
 
 key = "yourAPIkey"
 
@@ -32,31 +33,36 @@ def wow_classes():
             print class_id, class_name, spec_name
 
 
-def wow_rankings():
-    response = requests.get(
-        "https://www.warcraftlogs.com:443/v1/rankings/encounter/1691?metric=dps&size=20&difficulty=5&region=1&class=8&spec=1&bracket=0&limit=3&page=1&api_key=" + key)
+def wow_rankings(encounter_id=-1, character_name="", server_name="", server_region="", metric="", size=-1, difficulty=-1, partition=-1, class_id=-1, spec=-1,bracket=-1,limit=-1,guild="",server="",region="",page=-1,filter_str=""):
+    if(encounter_id == -1 and (character_name+server_name+server_region == "")):
+        print("Invalid query: Requires encounter_id or character_name, server_name and server_region")
+        return None 
+    character_mode = False
+    if(character_name == "" or server_name=="" or server_region==""):
+        url = "https://www.warcraftlogs.com:443/v1/rankings/encounter/"+str(encounter_id)+"?api_key=" + key
+    else:
+        url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region+"?api_key=" + key
+        if(not encounter_id == -1): url = url+"&encounter="+str(encounter_id)
+        character_mode=True
+    if(not metric == ""): url = url+"&metric="+metric
+    if(not size == -1): url = url+"&size="+str(size)
+    if(not difficulty == -1): url = url+"&difficulty="+str(difficulty)
+    if(not partition == -1): url = url+"&partition="+str(partition)
+    if(not class_id == -1 and not character_mode): url = url+"&class="+str(class_id)
+    if(not spec == -1 and not character_mode): url = url+"&spec="+str(spec)
+    if(not bracket == -1 and not character_mode): url = url+"&bracket="+str(bracket)
+    if(not limit == -1 and not character_mode): url = url+"&limit="+str(limit)
+    if(not guild == "" and not character_mode): url = url+"&guild="+guild
+    if(not server == "" and not character_mode): url = url+"&server="+server
+    if(not region == "" and not character_mode): url = url+"&region="+region
+    if(not page == -1 and not character_mode): url = url+"&page="+str(page)
+    if(not filter_str == "" and not character_mode): url = url+"&filter="+filter_str
+
+    print(url)
+    response = requests.get(url)
     # print response.content
     json_data = response.json()
-    # print json_data
-    rank_totals = json_data['total']
-    print "Total:", rank_totals
-    for x in json_data['rankings']:
-        rank_name = x['name']
-        rank_class = x['class']
-        rank_spec = x['spec']
-        rank_total = x['total']
-        rank_duration = x['startTime']
-        rank_fightID = x['fightID']
-        rank_reportID = x['reportID']
-        rank_guild = x['guild']
-        rank_server = x['server']
-        rank_ilevel = x['itemLevel']
-        #try:
-        #    print rank_name
-        #except:
-        #    print "failure"
-        print rank_name, rank_class, rank_spec, rank_total, rank_duration, rank_fightID, rank_reportID, rank_guild, rank_server, rank_ilevel
-
+    return json_data
 
 def wow_reports():
     return
@@ -65,4 +71,10 @@ def wow_reports():
 def wow_report():
     return
 
-wow_rankings()
+key=sys.argv[1]
+data = wow_rankings(character_name="Riloin", limit=10, guild="Vitium", server_name="Korgath", server_region="US")
+#rankings = data["rankings"]
+for x in data:
+    print(x["rank"])
+    import unicodedata
+    #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
