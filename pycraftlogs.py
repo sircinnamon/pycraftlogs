@@ -33,34 +33,37 @@ def wow_classes():
             print class_id, class_name, spec_name
 
 
-def wow_rankings(encounter_id=-1, character_name="", server_name="", server_region="", metric="", size=-1, difficulty=-1, partition=-1, class_id=-1, spec=-1,bracket=-1,limit=-1,guild="",server="",region="",page=-1,filter_str=""):
-    if(encounter_id == -1 and (character_name+server_name+server_region == "")):
-        print("Invalid query: Requires encounter_id or character_name, server_name and server_region")
-        return None 
-    character_mode = False
-    if(character_name == "" or server_name=="" or server_region==""):
-        url = "https://www.warcraftlogs.com:443/v1/rankings/encounter/"+str(encounter_id)+"?api_key=" + key
-    else:
-        url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region+"?api_key=" + key
-        if(not encounter_id == -1): url = url+"&encounter="+str(encounter_id)
-        character_mode=True
-    if(not metric == ""): url = url+"&metric="+metric
-    if(not size == -1): url = url+"&size="+str(size)
-    if(not difficulty == -1): url = url+"&difficulty="+str(difficulty)
-    if(not partition == -1): url = url+"&partition="+str(partition)
-    if(not class_id == -1 and not character_mode): url = url+"&class="+str(class_id)
-    if(not spec == -1 and not character_mode): url = url+"&spec="+str(spec)
-    if(not bracket == -1 and not character_mode): url = url+"&bracket="+str(bracket)
-    if(not limit == -1 and not character_mode): url = url+"&limit="+str(limit)
-    if(not guild == "" and not character_mode): url = url+"&guild="+guild
-    if(not server == "" and not character_mode): url = url+"&server="+server
-    if(not region == "" and not character_mode): url = url+"&region="+region
-    if(not page == -1 and not character_mode): url = url+"&page="+str(page)
-    if(not filter_str == "" and not character_mode): url = url+"&filter="+filter_str
+def wow_rankings_encounter(encounter_id, character_name=None, server_name=None, server_region=None, metric=None, size=None, difficulty=None, partition=None, class_id=None, spec=None,bracket=None,limit=None,guild=None,server=None,region=None,page=None,filter_str=None):
+    url = "https://www.warcraftlogs.com:443/v1/rankings/encounter/"+str(encounter_id)
+    params = {"api_key":key,
+              "metric":metric,
+              "size":size,
+              "difficulty":difficulty,
+              "partition":partition,
+              "class":class_id,
+              "spec":spec,
+              "bracket":bracket,
+              "limit":limit,
+              "guild":guild,
+              "server":server,
+              "region":region,
+              "page":page,
+              "filter":filter_str}
+    response = requests.get(url, params=params)
+    print(response.url)
+    json_data = response.json()
+    return json_data
 
-    print(url)
-    response = requests.get(url)
-    # print response.content
+def wow_rankings_character(character_name, server_name, server_region, zone=None, encounter_id=None, metric=None, bracket=None, partition=None):
+    url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region
+    params = {"api_key":key,
+              "zone":zone,
+              "encounter":encounter_id,
+              "metric":metric,
+              "bracket":bracket,
+              "partition":partition}
+    response = requests.get(url, params=params)
+    print(response.url)
     json_data = response.json()
     return json_data
 
@@ -72,9 +75,10 @@ def wow_report():
     return
 
 key=sys.argv[1]
-data = wow_rankings(character_name="Riloin", limit=10, guild="Vitium", server_name="Korgath", server_region="US")
+data = wow_rankings_character(character_name="Riloin",server_name="Korgath", server_region="US",encounter_id=1871,metric="hps")
 #rankings = data["rankings"]
 for x in data:
+    #print x.items()
     print(x["rank"])
     import unicodedata
     #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
