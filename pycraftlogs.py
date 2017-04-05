@@ -57,7 +57,8 @@ def wow_rankings_encounter(encounter_id, character_name=None,
               "page":page,
               "filter":filter_str}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -72,7 +73,8 @@ def wow_rankings_character(character_name, server_name, server_region,
               "bracket":bracket,
               "partition":partition}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -88,7 +90,8 @@ def wow_parses(character_name, server_name, server_region, zone=None,
               "compare":compare,
               "partition":partition}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -99,7 +102,8 @@ def wow_reports_guild(guild_name, server_name, server_region,
               "start":start,
               "end":end}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -109,7 +113,8 @@ def wow_reports_user(username, start=None, end=None):
               "start":start,
               "end":end}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -119,7 +124,8 @@ def wow_report_fights(code, translate=None):
     params = {"api_key":key,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -141,7 +147,8 @@ def wow_report_events(code, start=None, end=None, actorid=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -173,7 +180,8 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
     json_data = response.json()
     return json_data
 
@@ -201,5 +209,5 @@ for x in data["fights"]:
     #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
 data = wow_report_tables(view="healing",code=recent_report_code,start=(recent_fight_start), end=(recent_fight_end))
 for x in data["entries"]:
-    print x.keys()
+    #print x.keys()
     print(x["name"] + " "+ str(x["total"]))
