@@ -9,31 +9,12 @@ def wow_zones():
         "https://www.warcraftlogs.com:443/v1/zones?api_key=" + key)
     json_data = response.json()
     return json_data
-    # for i in json_data:
-    #     zone_id = i['id']
-    #     zone_name = i['name']
-    #     for encounter in i['encounters']:
-    #         encounter_name = encounter['name']
-    #         if 'brackets' not in i:
-    #             print zone_id, zone_name, encounter_name
-    #         else:
-    #             for bracket in i['brackets']:
-    #                 bracket_name = bracket['name']
-    #                 print zone_id, zone_name, encounter_name, bracket_name
-
 
 def wow_classes():
     response = requests.get(
         "https://www.warcraftlogs.com:443/v1/classes?api_key=" + key)
     json_data = response.json()
     return json_data
-    # for i in json_data:
-    #     class_id = i['id']
-    #     class_name = i['name']
-    #     for spec in i['specs']:
-    #         spec_name = spec['name']
-    #         print class_id, class_name, spec_name
-
 
 def wow_rankings_encounter(encounter_id, character_name=None,
                            server_name=None, server_region=None, 
@@ -186,6 +167,19 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     json_data = response.json()
     return json_data
 
+def generateReportList(json):
+    reports = []
+    for report in json:
+    	reports.append(Report(report))
+    return reports
+
+def generateUserReportList(username, start=None, end=None):
+	return generateReportList(wow_reports_user(username, start=start, end=end))
+
+def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None):
+	return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end))
+
+
 def generateFightList(report_code):
     json = wow_report_fights(report_code)
     allFriendlies = []
@@ -226,36 +220,11 @@ def generateFightList(report_code):
     return fightList
 
 key=sys.argv[1]
-data = wow_reports_guild(guild_name="Vitium",server_name="Korgath", server_region="US")
-#rankings = data[""]
-recent_report_code = ""
-raid_start = 0
-for x in data:
-    #print x.items()
-    print(x["title"] + " "+ x["owner"])
-    import unicodedata
-    recent_report_code = x["id"]
-    raid_start = x["start"]
-    #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
-# data = wow_report_fights(code=recent_report_code)
-# recent_fight_start = 0
-# recent_fight_end = 0
-# for x in data["fights"]:
-#     #print x.items()
-#     print(x["name"] + " "+ str(x["kill"]))
-#     recent_fight_start = x["start_time"]
-#     recent_fight_end = x["end_time"]
-#     import unicodedata
-#     #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
-# data = wow_report_tables(view="healing",code=recent_report_code,start=(recent_fight_start), end=(recent_fight_end))
-# for x in data["entries"]:
-#     #print x.keys()
-#     print(x["name"] + " "+ str(x["total"]))
+lst = generateGuildReportList("Vitium","Korgath","US",start=1490241142311)
+for l in lst:
+	print l.title + " ("+l.id+")"
+recent_report_code = lst[len(lst)-1].id
 
 lst = generateFightList(recent_report_code)
 for l in lst:
     print(l.name)
-    print "========================"
-    for f in l.friendlies:
-      print f.name + ", "
-    print "========================"
