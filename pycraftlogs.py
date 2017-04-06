@@ -1,5 +1,6 @@
 import requests
 import sys
+from pycraftlogsclasses import *
 
 key = "yourAPIkey"
 
@@ -185,9 +186,48 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     json_data = response.json()
     return json_data
 
+def generateFightList(report_code):
+    json = wow_report_fights(report_code)
+    allFriendlies = []
+    allEnemies = []
+    allFriendlyPets = []
+    allEnemyPets = []
+    fightList = []
+    for friendly in json["friendlies"]:
+        allFriendlies.append(FightParticipant(friendly, report_code))
+    for enemy in json["enemies"]:
+        allEnemies.append(FightParticipant(enemy, report_code))
+    for friendlypet in json["friendlyPets"]:
+        allFriendlyPets.append(FightParticipant(friendlypet, report_code))
+    for enemypet in json["enemyPets"]:
+        allEnemyPets.append(FightParticipant(enemypet, report_code))
+    for fight in json["fights"]:
+        friendlies = []
+        enemies = []
+        friendlypets = []
+        enemypets = []
+        phases = []
+        for friendly in allFriendlies:
+            if(friendly.fights.attended(fight["id"])):
+                friendlies.append(friendly)
+        for enemy in allEnemies:
+            if(enemy.fights.attended(fight["id"])):
+                enemies.append(enemy)
+        for friendlypet in allFriendlyPets:
+            if(friendlypet.fights.attended(fight["id"])):
+                friendlypets.append(friendlypet)
+        for enemypet in allEnemyPets:
+            if(enemypet.fights.attended(fight["id"])):
+                enemypets.append(enemypet)
+        for boss in json["phases"]:
+            if(boss["boss"] == fight["boss"]):
+                phases = boss["phases"]
+        fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
+    return fightList
+
 key=sys.argv[1]
 data = wow_reports_guild(guild_name="Vitium",server_name="Korgath", server_region="US")
-#rankings = data["rankings"]
+#rankings = data[""]
 recent_report_code = ""
 raid_start = 0
 for x in data:
@@ -197,17 +237,25 @@ for x in data:
     recent_report_code = x["id"]
     raid_start = x["start"]
     #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
-data = wow_report_fights(code=recent_report_code)
-recent_fight_start = 0
-recent_fight_end = 0
-for x in data["fights"]:
-    #print x.items()
-    print(x["name"] + " "+ str(x["kill"]))
-    recent_fight_start = x["start_time"]
-    recent_fight_end = x["end_time"]
-    import unicodedata
-    #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
-data = wow_report_tables(view="healing",code=recent_report_code,start=(recent_fight_start), end=(recent_fight_end))
-for x in data["entries"]:
-    #print x.keys()
-    print(x["name"] + " "+ str(x["total"]))
+# data = wow_report_fights(code=recent_report_code)
+# recent_fight_start = 0
+# recent_fight_end = 0
+# for x in data["fights"]:
+#     #print x.items()
+#     print(x["name"] + " "+ str(x["kill"]))
+#     recent_fight_start = x["start_time"]
+#     recent_fight_end = x["end_time"]
+#     import unicodedata
+#     #print unicodedata.normalize("NFKD", x["name"]).encode("ascii", "ignore")
+# data = wow_report_tables(view="healing",code=recent_report_code,start=(recent_fight_start), end=(recent_fight_end))
+# for x in data["entries"]:
+#     #print x.keys()
+#     print(x["name"] + " "+ str(x["total"]))
+
+lst = generateFightList(recent_report_code)
+for l in lst:
+    print(l.name)
+    print "========================"
+    for f in l.friendlies:
+      print f.name + ", "
+    print "========================"
