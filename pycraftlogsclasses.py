@@ -1,4 +1,4 @@
-class Report:
+class Report(object):
 	def __init__(self, json):
 		self.json = json
 		self.id = json["id"]
@@ -8,7 +8,7 @@ class Report:
 		self.end = json["end"]
 		self.zone = json["zone"]
 
-class Fight:
+class Fight(object):
 	def __init__(self, json, code, friendlies, enemies, friendlyPets, enemyPets, phases):
 		self.json = json
 		self.code = code
@@ -31,7 +31,23 @@ class Fight:
 		self.enemyPets = enemyPets
 		self.phases = phases
 
-class FightParticipant:
+class TrashFight(object):
+	def __init__(self, json, code, friendlies, enemies, friendlyPets, enemyPets, phases):
+		self.json = json
+		self.code = code
+		self.id = json["id"]
+		self.start_time = json["start_time"]
+		self.end_time = json["end_time"]
+		self.boss = json["boss"]
+		self.name = json["name"]
+
+		self.friendlies = friendlies
+		self.enemies = enemies
+		self.friendlyPets = friendlyPets
+		self.enemyPets = enemyPets
+		self.phases = phases
+
+class FightParticipant(object):
 	def __init__(self, json, code):
 		self.json = json
 		self.code = code
@@ -43,16 +59,10 @@ class FightParticipant:
 
 class FightParticipantPet(FightParticipant):
 	def __init__(self, json, code):
-		self.json = json
-		self.code = code
-		self.name = json["name"]
-		self.id = json["id"]
-		self.guid = json["guid"]
-		self.type = json["type"]
-		self.fights = FightAttendance(json["fights"])
+		super(FightParticipantPet,self).__init__(json, code)
 		self.petOwner = json["petOwner"]
 
-class FightAttendance:
+class FightAttendance(object):
 	def __init__(self, json):
 		#json is a list of dictionaries, with possible ids, isntances and groups
 		self.json = json
@@ -77,3 +87,103 @@ class FightAttendance:
 		return 0
 	def attended(self, fightId):
 		return (self.attendedFights.count(fightId)>0)
+
+#Table views: "damage-done", "damage-taken", "healing", 
+#"casts", "summons", "buffs", "debuffs", "deaths", 
+#"survivability", "resources", "resource-gains"
+
+class TableEntry(object):
+	#Superclass for standard table entries
+	#damage-done, damage-taken, healing, casts, summons, deaths
+	def __init__(self, json, code, totalTime):
+		self.json = json
+		self.code = code
+		self.name = json["name"]
+		self.id = json["id"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.icon = json["icon"]
+		self.gear = list(map(Gear, json["gear"])) if json.has_key("gear") else None #Hati comes up as a non pet but has no gear or talents
+		self.talents = list(map(Talent, json["talents"])) if json.has_key("talents") else None # ...relatable
+		self.totalTime = totalTime
+
+class DamageDoneTableEntry(TableEntry):
+	#Represents one entry on a damage-done table
+	def __init__(self, json, code, totalTime):
+		super(DamageDoneTableEntry,self).__init__(json, code, totalTime)
+		self.total = json["total"]
+		self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+		self.activeTime = json["activeTime"]
+		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.abilities = list(map(Ability,json["abilities"]))
+		#exclude? May always be empty on this table
+		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
+		self.targets = list(map(Target,json["targets"]))
+		self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if json.has_key("pets") else None
+
+
+class Gear(object):
+	#Represents an equipped piece of gear
+	def __init__(self, json):
+		self.json = json
+		self.id = json["id"]
+		self.slot = json["slot"]
+		self.itemLevel = json["itemLevel"]
+		self.quality = json["quality"]
+		self.icon = json["icon"]
+		self.name = json["name"] if json.has_key("name") else None
+		self.gems = list(map(Gem, json["gems"])) if json.has_key("gems") else None
+		self.bonusIDs = json["bonusIDs"] if json.has_key("bonusIDs") else None
+		self.permanentEnchant = json["permanentEnchant"] if json.has_key("permanentEnchant") else None
+		self.permanentEnchantName = json["permanentEnchantName"] if json.has_key("permanentEnchantName") else None
+
+class Gem(object):
+	#represents a socketed gem
+	def __init__(self, json):
+		self.json = json
+		self.id = json["id"]
+		self.itemLevel = json["itemLevel"]
+		self.icon = json["icon"]
+
+class Talent(object):
+	#represents a selected talent
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.abilityIcon = json["abilityIcon"]
+
+class Ability(object):
+	#Parent class for an ability
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.total = json["total"]
+		self.type = json["type"]
+
+class Target(object):
+	#Parent class for a target of an ability
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.total = json["total"]
+		self.type = json["type"]
+
+class Pet(object):
+	#parent class for a pet attached to a layers table entry
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.id = json["id"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.icon = json["icon"]
+		self.total = json["total"]
+
+class DamageDoneTableEntryPet(Pet):
+	#Extended for extra damage-done view
+	def __init__(self, json):
+		super(DamageDoneTableEntryPet,self).__init__(json)
+		self.totalReduced = json["totalReduced"]
+		self.activeTime = json["activeTime"]

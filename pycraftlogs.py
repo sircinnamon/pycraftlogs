@@ -165,6 +165,11 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
+    if(view == "damage-done"):
+		table = list()
+		for entry in json_data["entries"]:
+			table.append(DamageDoneTableEntry(entry, code, json_data["totalTime"]))
+		return table
     return json_data
 
 def generateReportList(json):
@@ -216,7 +221,10 @@ def generateFightList(report_code):
         for boss in json["phases"]:
             if(boss["boss"] == fight["boss"]):
                 phases = boss["phases"]
-        fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
+        if(fight["boss"]==0):
+        	fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))	
+        else:
+        	fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
 
 key=sys.argv[1]
@@ -227,4 +235,14 @@ recent_report_code = lst[len(lst)-1].id
 
 lst = generateFightList(recent_report_code)
 for l in lst:
-    print(l.name)
+	if(l.boss != 0):
+	    print(l.name)
+	    if(len(l.phases)>0):
+	    	for p in l.phases:
+	    		print "\t"+p
+	    print "\n"
+
+table = wow_report_tables("damage-done", recent_report_code, end=4058391)
+
+for entry in table:
+	print(entry.name + " -> " + str(entry.total))
