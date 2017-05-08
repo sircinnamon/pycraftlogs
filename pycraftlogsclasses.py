@@ -137,14 +137,14 @@ class DamageTakenTableEntry(TableEntry):
 class HealingTableEntry(TableEntry):
 	#Represents one entry on a healing table
 	def __init__(self, json, code, totalTime):
-		super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
+		super(HealingTableEntry,self).__init__(json, code, totalTime)
 		self.total = json["total"]
-		self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
 		self.activeTime = json["activeTime"]
 		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.overheal = json["overheal"]
 		self.abilities = list(map(DamageTakenAbility,json["abilities"]))
 		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
-		self.sources = list(map(DamageTakenSource,json["sources"]))
+		self.targets = list(map(BasicEntity,json["targets"]))
 
 class Gear(object):
 	#Represents an equipped piece of gear
