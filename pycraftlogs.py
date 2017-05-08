@@ -165,6 +165,9 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
 	print(response.url + " " + str(response.status_code))
 	response.raise_for_status()
 	json_data = response.json()
+	return parse_json_to_table(json_data, view, code)
+
+def parse_json_to_table(json_data, view, code):
 	if(view == "damage-done"):
 		table = list()
 		for entry in json_data["entries"]:
@@ -195,7 +198,13 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
 		for entry in json_data["entries"]:
 			table.append(DeathsTableEntry(entry, code))
 		return table
-	return json_data
+	elif(view == "buffs" or view == "debuffs"):
+		table = list()
+		for entry in json_data["auras"]:
+			table.append(AuraTableEntry(entry, code, json_data["useTargets"], json_data["totalTime"], json_data["startTime"], json_data["endTime"]))
+		return table
+	else:
+		return json_data
 
 def generateReportList(json):
 	reports = []
@@ -300,9 +309,21 @@ recent_report_code = lst[len(lst)-1].id
 # 	for a in entry.abilities:
 # 		print("	"+a.name + ": "+str(a.total))
 
-table = wow_report_tables("deaths", recent_report_code, end=4058391)
-print("DEATHS")
+# table = wow_report_tables("deaths", recent_report_code, end=4058391)
+# print("DEATHS")
+# for entry in table:
+# 	print(entry.name + " -> " + str(entry.timestamp))
+# 	if(entry.killingBlow != None):
+# 		print("	"+entry.killingBlow.name + ": "+str(entry.overkill))
+
+# table = wow_report_tables("buffs", recent_report_code, end=4058391)
+# print("BUFFS")
+# for entry in table:
+# 	print(entry.name + " -> " + str(entry.totalUses))
+# 	print("	"+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
+
+table = wow_report_tables("debuffs", recent_report_code, end=4058391)
+print("DEBUFFS")
 for entry in table:
-	print(entry.name + " -> " + str(entry.timestamp))
-	if(entry.killingBlow != None):
-		print("	"+entry.killingBlow.name + ": "+str(entry.overkill))
+	print(entry.name + " -> " + str(entry.totalUses))
+	print("	"+str(entry.totalUptime) + " over "+ str(len(entry.bands)))

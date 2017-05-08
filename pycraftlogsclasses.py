@@ -187,6 +187,23 @@ class DeathsTableEntry(object):
 		self.events = list(map(Event,json["events"]))
 		self.killingBlow = DeathKillingBlow(json["killingBlow"]) if json.has_key("killingBlow") else None
 
+class AuraTableEntry(object):
+	#represents an entry on buffs/debuffs table
+	def __init__(self, json, code, useTargets, totalTime, startTime, endTime):
+		self.json = json
+		self.code = code
+		self.name = json["name"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.abilityIcon = json["abilityIcon"]
+		self.totalUptime = json["totalUptime"]
+		self.totalUses = json["totalUses"]
+		self.bands = list(map(AuraBand,json["bands"]))
+		self.scanUseTargets = useTargets
+		self.scanTotalTime = totalTime
+		self.scanStartTime = startTime #start time of scan, not buff
+		self.scanEndTime = endTime #end time of scan, not buff
+
 
 class Gear(object):
 	#Represents an equipped piece of gear
@@ -314,3 +331,9 @@ class EventSource(object):
 		self.guid = json["guid"]
 		self.type = json["type"]
 		self.icon = json["icon"]
+
+class AuraBand(object):
+	#represents a band of time at which an aura was active
+	def __init__(self, json):
+		self.startTime = json["startTime"]
+		self.endTime = json["endTime"]
