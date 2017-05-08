@@ -118,9 +118,20 @@ class DamageDoneTableEntry(TableEntry):
 		self.abilities = list(map(Ability,json["abilities"]))
 		#exclude? May always be empty on this table
 		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
-		self.targets = list(map(Target,json["targets"]))
+		self.targets = list(map(BasicEntity,json["targets"]))
 		self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if json.has_key("pets") else None
 
+class DamageTakenTableEntry(TableEntry):
+	#Represents one entry on a damage-done table
+	def __init__(self, json, code, totalTime):
+		super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
+		self.total = json["total"]
+		self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+		self.activeTime = json["activeTime"]
+		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.abilities = list(map(DamageTakenAbility,json["abilities"]))
+		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
+		self.sources = list(map(DamageTakenSource,json["sources"]))
 
 class Gear(object):
 	#Represents an equipped piece of gear
@@ -162,13 +173,26 @@ class Ability(object):
 		self.total = json["total"]
 		self.type = json["type"]
 
-class Target(object):
-	#Parent class for a target of an ability
+class DamageTakenAbility(Ability):
+	#Extended ability for fields on damage taken table
+	def __init__(self, json):
+		super(DamageTakenAbility,self).__init__(json)
+		self.totalReduced = json["totalReduced"]if json.has_key("totalReduced") else 0
+
+class BasicEntity(object):
+	#Parent class for an entity in a fight on a table
+	#Applies as Target for DamageDone and Healing tables
 	def __init__(self, json):
 		self.json = json
 		self.name = json["name"]
 		self.total = json["total"]
 		self.type = json["type"]
+
+class DamageTakenSource(BasicEntity):
+	#SubClass for a source of damage taken on damage taken table
+	def __init__(self, json):
+		super(DamageTakenSource,self).__init__(json)
+		self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
 
 class Pet(object):
 	#parent class for a pet attached to a layers table entry

@@ -166,23 +166,28 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     response.raise_for_status()
     json_data = response.json()
     if(view == "damage-done"):
-		table = list()
-		for entry in json_data["entries"]:
-			table.append(DamageDoneTableEntry(entry, code, json_data["totalTime"]))
-		return table
+        table = list()
+        for entry in json_data["entries"]:
+            table.append(DamageDoneTableEntry(entry, code, json_data["totalTime"]))
+        return table
+    elif(view == "damage-taken"):
+        table = list()
+        for entry in json_data["entries"]:
+            table.append(DamageTakenTableEntry(entry, code, json_data["totalTime"]))
+        return table
     return json_data
 
 def generateReportList(json):
     reports = []
     for report in json:
-    	reports.append(Report(report))
+        reports.append(Report(report))
     return reports
 
 def generateUserReportList(username, start=None, end=None):
-	return generateReportList(wow_reports_user(username, start=start, end=end))
+    return generateReportList(wow_reports_user(username, start=start, end=end))
 
 def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None):
-	return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end))
+    return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end))
 
 
 def generateFightList(report_code):
@@ -222,27 +227,34 @@ def generateFightList(report_code):
             if(boss["boss"] == fight["boss"]):
                 phases = boss["phases"]
         if(fight["boss"]==0):
-        	fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))	
+            fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))    
         else:
-        	fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
+            fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
 
 key=sys.argv[1]
 lst = generateGuildReportList("Vitium","Korgath","US",start=1490241142311)
 for l in lst:
-	print l.title + " ("+l.id+")"
+    print l.title + " ("+l.id+")"
 recent_report_code = lst[len(lst)-1].id
 
 lst = generateFightList(recent_report_code)
 for l in lst:
-	if(l.boss != 0):
-	    print(l.name)
-	    if(len(l.phases)>0):
-	    	for p in l.phases:
-	    		print "\t"+p
-	    print "\n"
+    if(l.boss != 0):
+        print(l.name)
+        if(len(l.phases)>0):
+            for p in l.phases:
+                print "\t"+p
+        print "\n"
 
 table = wow_report_tables("damage-done", recent_report_code, end=4058391)
-
+print("DMG DONE")
 for entry in table:
-	print(entry.name + " -> " + str(entry.total))
+    print(entry.name + " -> " + str(entry.total))
+
+table = wow_report_tables("damage-taken", recent_report_code, end=4058391)
+print("DMG TAKEN")
+for entry in table:
+    print(entry.name + " -> " + str(entry.total))
+    for a in entry.abilities:
+    	print("    "+a.name + ": "+str(a.total))
