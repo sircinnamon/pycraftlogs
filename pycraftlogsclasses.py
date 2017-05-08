@@ -102,6 +102,7 @@ class TableEntry(object):
 		self.id = json["id"]
 		self.guid = json["guid"]
 		self.type = json["type"]
+		self.itemLevel = json["itemLevel"] if json.has_key("itemLevel") else None #Hati screws this up too
 		self.icon = json["icon"]
 		self.gear = list(map(Gear, json["gear"])) if json.has_key("gear") else None #Hati comes up as a non pet but has no gear or talents
 		self.talents = list(map(Talent, json["talents"])) if json.has_key("talents") else None # ...relatable
@@ -122,7 +123,19 @@ class DamageDoneTableEntry(TableEntry):
 		self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if json.has_key("pets") else None
 
 class DamageTakenTableEntry(TableEntry):
-	#Represents one entry on a damage-done table
+	#Represents one entry on a damage-taken table
+	def __init__(self, json, code, totalTime):
+		super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
+		self.total = json["total"]
+		self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+		self.activeTime = json["activeTime"]
+		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.abilities = list(map(DamageTakenAbility,json["abilities"]))
+		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
+		self.sources = list(map(DamageTakenSource,json["sources"]))
+
+class HealingTableEntry(TableEntry):
+	#Represents one entry on a healing table
 	def __init__(self, json, code, totalTime):
 		super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
 		self.total = json["total"]
