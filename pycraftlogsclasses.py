@@ -147,7 +147,7 @@ class HealingTableEntry(TableEntry):
 		self.targets = list(map(BasicEntity,json["targets"]))
 
 class CastsTableEntry(TableEntry):
-	#Represents one entry on a healing table
+	#Represents one entry on a Casts table
 	def __init__(self, json, code, totalTime):
 		super(CastsTableEntry,self).__init__(json, code, totalTime)
 		self.total = json["total"]
@@ -158,7 +158,7 @@ class CastsTableEntry(TableEntry):
 		self.targets = list(map(BasicEntity,json["targets"]))
 
 class SummonsTableEntry(TableEntry):
-	#Represents one entry on a healing table
+	#Represents one entry on a Summons table
 	def __init__(self, json, code, totalTime):
 		super(SummonsTableEntry,self).__init__(json, code, totalTime)
 		self.total = json["total"]
@@ -167,6 +167,26 @@ class SummonsTableEntry(TableEntry):
 		self.abilities = list(map(DamageTakenAbility,json["abilities"]))
 		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
 		self.targets = list(map(BasicEntity,json["targets"]))
+
+class DeathsTableEntry(object):
+	#Nonstandard table entry
+	def __init__(self, json, code):
+		self.json = json
+		self.code = code
+		self.name = json["name"]
+		self.id = json["id"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.icon = json["icon"]
+		self.timestamp = json["timestamp"]
+		self.damage = DeathHistory(json["damage"])
+		self.healing = DeathHistory(json["healing"])
+		self.fight = json["fight"]
+		self.deathWindow = json["deathWindow"]
+		self.overkill = json["overkill"]
+		self.events = list(map(Event,json["events"]))
+		self.killingBlow = DeathKillingBlow(json["killingBlow"]) if json.has_key("killingBlow") else None
+
 
 class Gear(object):
 	#Represents an equipped piece of gear
@@ -246,3 +266,51 @@ class DamageDoneTableEntryPet(Pet):
 		super(DamageDoneTableEntryPet,self).__init__(json)
 		self.totalReduced = json["totalReduced"]
 		self.activeTime = json["activeTime"]
+
+class DeathHistory(object):
+	#Stores the pre death damage or healing
+	def __init__(self, json):
+		self.json = json
+		self.total = json["total"]
+		self.activeTime = json["activeTime"]
+		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.abilities = list(map(Ability,json["abilities"]))
+		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
+		self.sources = list(map(BasicEntity,json["sources"]))
+
+class Event(object):
+	#Stores the pre death damage or healing
+	def __init__(self, json):
+		self.json = json
+		self.timestamp = json["timestamp"]
+		self.type = json["type"]
+		self.sourceID = json["sourceID"] if json.has_key("sourceID") else -1
+		self.source = EventSource(json["source"]) if json.has_key("source") else None
+		self.sourceIsFriendly = json["sourceIsFriendly"]
+		self.targetID = json["targetID"]
+		self.targetIsFriendly = json["targetIsFriendly"]
+		self.ability = DeathKillingBlow(json["ability"])
+		self.hitType = json["hitType"]
+		self.amount = json["amount"]
+		self.overkill = json["overkill"] if json.has_key("overkill") else 0
+		self.absorbed = json["absorbed"]
+		self.tick = json["tick"] if json.has_key("tick") else False
+
+class DeathKillingBlow(object):
+	#represents an ability generally
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.abilityIcon = json["abilityIcon"]
+
+class EventSource(object):
+	#represents a source of death that has no ID
+	def __init__(self, json):
+		self.json = json
+		self.name = json["name"]
+		self.id = json["id"]
+		self.guid = json["guid"]
+		self.type = json["type"]
+		self.icon = json["icon"]

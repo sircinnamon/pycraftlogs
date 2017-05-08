@@ -190,6 +190,11 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
 		for entry in json_data["entries"]:
 			table.append(SummonsTableEntry(entry, code, json_data["totalTime"]))
 		return table
+	elif(view == "deaths"):
+		table = list()
+		for entry in json_data["entries"]:
+			table.append(DeathsTableEntry(entry, code))
+		return table
 	return json_data
 
 def generateReportList(json):
@@ -288,9 +293,16 @@ recent_report_code = lst[len(lst)-1].id
 # 	for a in entry.abilities:
 # 		print("	"+a.name + ": "+str(a.total))
 
-table = wow_report_tables("summons", recent_report_code, end=4058391)
-print("SUMMONS")
+# table = wow_report_tables("summons", recent_report_code, end=4058391)
+# print("SUMMONS")
+# for entry in table:
+# 	print(entry.name + " -> " + str(entry.total))
+# 	for a in entry.abilities:
+# 		print("	"+a.name + ": "+str(a.total))
+
+table = wow_report_tables("deaths", recent_report_code, end=4058391)
+print("DEATHS")
 for entry in table:
-	print(entry.name + " -> " + str(entry.total))
-	for a in entry.abilities:
-		print("	"+a.name + ": "+str(a.total))
+	print(entry.name + " -> " + str(entry.timestamp))
+	if(entry.killingBlow != None):
+		print("	"+entry.killingBlow.name + ": "+str(entry.overkill))
