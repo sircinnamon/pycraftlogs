@@ -180,6 +180,11 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
 		for entry in json_data["entries"]:
 			table.append(HealingTableEntry(entry, code, json_data["totalTime"]))
 		return table
+	elif(view == "casts"):
+		table = list()
+		for entry in json_data["entries"]:
+			table.append(CastsTableEntry(entry, code, json_data["totalTime"]))
+		return table
 	return json_data
 
 def generateReportList(json):
@@ -264,8 +269,15 @@ recent_report_code = lst[len(lst)-1].id
 # 	for a in entry.abilities:
 # 		print("	"+a.name + ": "+str(a.total))
 
-table = wow_report_tables("healing", recent_report_code, end=4058391)
-print("HEALING")
+# table = wow_report_tables("healing", recent_report_code, end=4058391)
+# print("HEALING")
+# for entry in table:
+# 	print(entry.name + " -> " + str(entry.total))
+# 	for a in entry.abilities:
+# 		print("	"+a.name + ": "+str(a.total))
+
+table = wow_report_tables("casts", recent_report_code, end=4058391)
+print("CASTS")
 for entry in table:
 	print(entry.name + " -> " + str(entry.total))
 	for a in entry.abilities:

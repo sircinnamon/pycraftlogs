@@ -146,6 +146,17 @@ class HealingTableEntry(TableEntry):
 		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
 		self.targets = list(map(BasicEntity,json["targets"]))
 
+class CastsTableEntry(TableEntry):
+	#Represents one entry on a healing table
+	def __init__(self, json, code, totalTime):
+		super(CastsTableEntry,self).__init__(json, code, totalTime)
+		self.total = json["total"]
+		self.activeTime = json["activeTime"]
+		self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+		self.abilities = list(map(DamageTakenAbility,json["abilities"]))
+		self.damageAbilities = list(map(Ability,json["damageAbilities"]))
+		self.targets = list(map(BasicEntity,json["targets"]))
+
 class Gear(object):
 	#Represents an equipped piece of gear
 	def __init__(self, json):
