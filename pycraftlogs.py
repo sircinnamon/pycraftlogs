@@ -8,12 +8,19 @@ def wow_zones():
 	response = requests.get(
 		"https://www.warcraftlogs.com:443/v1/zones?api_key=" + key)
 	json_data = response.json()
-	return json_data
+	zones = list()
+	for entry in json_data:
+		zones.append(Zone(entry))
+	return zones
 
 def wow_classes():
 	response = requests.get(
 		"https://www.warcraftlogs.com:443/v1/classes?api_key=" + key)
 	json_data = response.json()
+	classes = list()
+	for entry in json_data:
+		classes.append(Zone(entry))
+	return classes
 	return json_data
 
 def wow_rankings_encounter(encounter_id, character_name=None,
@@ -272,3 +279,11 @@ print("DEBUFFS")
 for entry in table:
 	print(entry.name + " -> " + str(entry.totalUses))
 	print("	"+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
+
+zones = wow_zones()
+for entry in zones:
+	print(entry.name + " - "+ str(entry.id))
+
+classes = wow_classes()
+for entry in classes:
+	print(entry.name + " - "+ str(entry.id))
