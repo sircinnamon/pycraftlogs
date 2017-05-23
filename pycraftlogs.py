@@ -1,3 +1,9 @@
+"""pycraftlogs is an API wrapper for the WarcraftLogs API.
+
+The WarcraftLogs API is still under construction but in its current state it
+can do many useful things. This wrapper allows simpler interactions with the
+API to occur within any python program.
+"""
 import requests
 import sys
 from pycraftlogsclasses import *
