@@ -267,61 +267,6 @@ for l in lst:
 	print l.title + " ("+l.id+")"
 recent_report_code = lst[len(lst)-1].id
 
-# lst = generateFightList(recent_report_code)
-# for l in lst:
-# 	if(l.boss != 0):
-# 		print(l.name)
-# 		if(len(l.phases)>0):
-# 			for p in l.phases:
-# 				print "\t"+p
-# 		print "\n"
-
-# table = wow_report_tables("damage-done", recent_report_code, end=4058391)
-# print("DMG DONE")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.total))
-
-# table = wow_report_tables("damage-taken", recent_report_code, end=4058391)
-# print("DMG TAKEN")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.total))
-# 	for a in entry.abilities:
-# 		print("	"+a.name + ": "+str(a.total))
-
-# table = wow_report_tables("healing", recent_report_code, end=4058391)
-# print("HEALING")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.total))
-# 	for a in entry.abilities:
-# 		print("	"+a.name + ": "+str(a.total))
-
-# table = wow_report_tables("casts", recent_report_code, end=4058391)
-# print("CASTS")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.total))
-# 	for a in entry.abilities:
-# 		print("	"+a.name + ": "+str(a.total))
-
-# table = wow_report_tables("summons", recent_report_code, end=4058391)
-# print("SUMMONS")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.total))
-# 	for a in entry.abilities:
-# 		print("	"+a.name + ": "+str(a.total))
-
-# table = wow_report_tables("deaths", recent_report_code, end=4058391)
-# print("DEATHS")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.timestamp))
-# 	if(entry.killingBlow != None):
-# 		print("	"+entry.killingBlow.name + ": "+str(entry.overkill))
-
-# table = wow_report_tables("buffs", recent_report_code, end=4058391)
-# print("BUFFS")
-# for entry in table:
-# 	print(entry.name + " -> " + str(entry.totalUses))
-# 	print("	"+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
-
 table = wow_report_tables("debuffs", recent_report_code, end=4058391)
 print("DEBUFFS")
 for entry in table:
