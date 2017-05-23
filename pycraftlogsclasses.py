@@ -333,7 +333,42 @@ class EventSource(object):
         self.icon = json["icon"]
 
 class AuraBand(object):
-    #represents a band of time at which an aura was active
-    def __init__(self, json):
-        self.startTime = json["startTime"]
-        self.endTime = json["endTime"]
+	#represents a band of time at which an aura was active
+	def __init__(self, json):
+		self.startTime = json["startTime"]
+		self.endTime = json["endTime"]
+
+class Zone(object):
+	#represents zone on the zone list
+	def __init__(self, json):
+		self.id = json["id"]
+		self.name = json["name"]
+		self.frozen = json["frozen"] if json.has_key("frozen") else False
+		self.encounters = list(map(Encounter, json["encounters"])) if json.has_key("encounters") else None
+		self.brackets = list(map(Bracket, json["brackets"])) if json.has_key("brackets") else None
+
+class Encounter(object):
+	#represents a single possible encounter in a raid
+	def __init__(self, json):
+		self.id = json["id"]
+		self.name = json["name"]
+
+class Bracket(object):
+	#represents a single bracket in a raid
+	def __init__(self, json):
+		self.id = json["id"]
+		self.name = json["name"]
+
+class _Class(object):
+	#represents a single playable character class
+	def __init__(self, json):
+		self.id = json["id"]
+		self.name = json["name"]
+		self.specs = list(map(Spec, json["specs"])) if json.has_key("specs") else None
+
+
+class Spec(object):
+	#represents a single class specialization
+	def __init__(self, json):
+		self.id = json["id"]
+		self.name = json["name"]
