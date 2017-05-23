@@ -11,6 +11,7 @@ from pycraftlogsclasses import *
 key = "yourAPIkey"
 
 def wow_zones():
+    """Request a listing of zones and return a list of Zone objects."""
     response = requests.get(
     "https://www.warcraftlogs.com:443/v1/zones?api_key=" + key)
     json_data = response.json()
@@ -20,6 +21,7 @@ def wow_zones():
     return zones
 
 def wow_classes():
+    """Request a listing of playable classes and return a list of _Class objects."""
     response = requests.get(
     "https://www.warcraftlogs.com:443/v1/classes?api_key=" + key)
     json_data = response.json()
@@ -29,13 +31,30 @@ def wow_classes():
     return classes
     return json_data
 
-def wow_rankings_encounter(encounter_id, character_name=None,
-                           server_name=None, server_region=None, 
-                           metric=None, size=None, difficulty=None,
-                           partition=None, class_id=None, spec=None,
-                           bracket=None, limit=None, guild=None,
-                           server=None, region=None, page=None,
-                           filter_str=None):
+def wow_rankings_encounter(encounter_id, metric=None, size=None, 
+                           difficulty=None, partition=None, 
+                           class_id=None, spec=None, bracket=None, 
+                           limit=None, guild=None, server=None, 
+                           region=None, page=None, filter_str=None):
+    """Request a set of matching rankings for a specific encounter. NOTE: Currently not stored in a class
+
+    Keyword arguments:
+    metric -- What metric to rank by. e.g. dps, hps etc.
+    size -- Only valid in non-flex raids, must be omitted otherwise. Limit results to this exact size.
+    difficulty -- Difficulty setting to query e.g. LFR to Mythic.
+    partition -- What partition to query, if multiple exist.
+    class_id -- Limit results to members of a certain class.
+    spec -- Limit results to members of a certain spec (class must also be specified).
+    bracket -- Bracket to query. See /zones response for info.
+    limit -- Number of results to achieve. Default 200, max 5000.
+    guild -- Limit results to given guild.
+    server -- Specify which server to query. Requires server_region.
+    region  -- Specify which server region to query.
+    page -- What "page" of results to retrieve. page size is "limit"
+    filter_str -- special filter string for experienced users
+
+    Further details in WCL API docs
+    """
     url = "https://www.warcraftlogs.com:443/v1/rankings/encounter/"+str(encounter_id)
     params = {"api_key":key,
               "metric":metric,
@@ -60,6 +79,7 @@ def wow_rankings_encounter(encounter_id, character_name=None,
 def wow_rankings_character(character_name, server_name, server_region,
                            zone=None, encounter_id=None, metric=None,
                            bracket=None, partition=None):
+    """Request a set of rankings for a specific character across all matching encounters. NOTE: Currently not stored in a class"""
     url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
@@ -76,6 +96,7 @@ def wow_rankings_character(character_name, server_name, server_region,
 def wow_parses(character_name, server_name, server_region, zone=None,
                encounter_id=None, metric=None, bracket=None, 
                compare=None, partition=None):
+    """Request a set of parses for a specific character across all matching encounters. NOTE: Currently not stored in a class"""
     url = "https://www.warcraftlogs.com:443/v1/parses/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
@@ -285,3 +306,6 @@ print("DEBUFFS")
 for entry in table:
     print(entry.name + " -> " + str(entry.totalUses))
     print("    "+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
+
+json_rankings = wow_rankings_encounter(1866, metric="hps", server="Korgath", region="US", guild="Vitium")
+print(json_rankings["rankings"][1]["name"])
