@@ -79,7 +79,17 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
 def wow_rankings_character(character_name, server_name, server_region,
                            zone=None, encounter_id=None, metric=None,
                            bracket=None, partition=None):
-    """Request a set of rankings for a specific character across all matching encounters. NOTE: Currently not stored in a class"""
+    """Request a set of rankings for a specific character across all matching encounters. NOTE: Currently not stored in a class
+
+    Keyword arguments:
+    zone -- Limit results to a specific zone (raid).
+    encounter_id -- Limit results to specific encounter.
+    metric -- What metric to rank by. e.g. dps, hps etc.
+    bracket -- Bracket to query. See /zones response for info.
+    partition -- What partition to query, if multiple exist.
+
+    Further details in WCL API docs
+    """
     url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
@@ -96,7 +106,18 @@ def wow_rankings_character(character_name, server_name, server_region,
 def wow_parses(character_name, server_name, server_region, zone=None,
                encounter_id=None, metric=None, bracket=None, 
                compare=None, partition=None):
-    """Request a set of parses for a specific character across all matching encounters. NOTE: Currently not stored in a class"""
+    """Request a set of parses for a specific character across all matching encounters. NOTE: Currently not stored in a class
+
+    Keyword arguments:
+    zone -- Limit results to a specific zone (raid).
+    encounter_id -- Limit results to specific encounter.
+    metric -- What metric to rank by. e.g. dps, hps etc.
+    bracket -- Bracket to query. See /zones response for info.
+    compare -- Defines whether to compare vs rankings or statistics. 0 or 1 respectively.
+    partition -- What partition to query, if multiple exist.
+
+    Further details in WCL API docs
+    """
     url = "https://www.warcraftlogs.com:443/v1/parses/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
@@ -113,6 +134,12 @@ def wow_parses(character_name, server_name, server_region, zone=None,
 
 def wow_reports_guild(guild_name, server_name, server_region,
                       start=None, end=None):
+    """Request a set of uploaded reports for a specified guild.
+
+    Keyword arguments:
+    start -- UNIX start time to contain search
+    end -- UNIX end time to contain search
+    """
     url = "https://www.warcraftlogs.com:443/v1/reports/guild/"+guild_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "start":start,
@@ -124,6 +151,12 @@ def wow_reports_guild(guild_name, server_name, server_region,
     return json_data
 
 def wow_reports_user(username, start=None, end=None):
+    """Request a set of reports uploaded by a certain WCL user.
+
+    Keyword arguments:
+    start -- UNIX start time to contain search
+    end -- UNIX end time to contain search
+    """
     url = "https://www.warcraftlogs.com:443/v1/reports/user/"+username
     params = {"api_key":key,
               "start":start,
@@ -136,6 +169,11 @@ def wow_reports_user(username, start=None, end=None):
 
 
 def wow_report_fights(code, translate=None):
+    """Request a list of fights contained in a report.
+
+    Keyword arguments:
+    translate -- Flag to determine if results should be translated to host lang.
+    """
     url = "https://www.warcraftlogs.com:443/v1/report/fights/"+code
     params = {"api_key":key,
               "translate":translate}
@@ -149,6 +187,21 @@ def wow_report_events(code, start=None, end=None, actorid=None,
                       actorinstance=None, actorclass=None, cutoff=None,
                       encounter=None, wipes=None, difficulty=None,
                       filter_str=None, translate=None):
+    """Request a list of events contained in a report.
+
+    Keyword arguments:
+    start -- UNIX offset from beginning of report to start list.
+    end -- UNIX offset from beginning to end list.
+    actorid -- Only return events with target or source being actor specified (or their pets).
+    actorinstance -- Only return events where source or target is in specified instance.
+    actorclass -- Only return events whose source or target is of the specified class.
+    cutoff -- Number of deaths at which events should not be included.
+    encounter -- Only return events that ocurred during the specified encounter.
+    wipes -- Only view events from wiped encounters.
+    difficulty -- Only view events occurring in specified difficulty.
+    filter_str -- Filter string for advanced users.
+    translate -- Flag to determine if results should be translated to host lang.
+    """
     url = "https://www.warcraftlogs.com:443/v1/report/events/"+code
     params = {"api_key":key,
               "start":start, 
@@ -175,6 +228,33 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
                       abilityid=None, options=None, cutoff=None, 
                       encounter=None, wipes=None, difficulty=None, 
                       filter_str=None, translate=None):
+    """Request a table of data from a specific report.
+
+    View is the type of data the table displays, which may change the specific
+    format of the returned data. Supports damage-done, damage-taken etc.
+
+    Keyword arguments:
+    start -- UNIX offset from beginning of report to start list of included events.
+    end -- UNIX offset from beginning to end list of included events.
+    hostility -- Flag determines whether data is collected for friendlies or enemies.
+    by -- indicate how to group table entries. e.g. by source, by target, by ability etc.
+    sourceid -- Only collect data where source is this id.
+    sourceinstance -- Only collect data where source instance is this id.
+    sourceclass -- Only collect data where source class is this id.
+    targetid -- Only collect data where target is this id.
+    targetinstance -- Only collect data where target instance is this id.
+    targetclass -- Only collect data where target class is this id.
+    abilityid -- only collect data where the ability matches this id.
+    options -- Special include/exclude options. 
+    cutoff -- Number of deaths at which events should not be included.
+    encounter -- Only return events that ocurred during the specified encounter.
+    wipes -- Only view events from wiped encounters.
+    difficulty -- Only view events occurring in specified difficulty.
+    filter_str -- Filter string for advanced users.
+    translate -- Flag to determine if results should be translated to host lang.
+
+    See WCL API docs for more info
+    """
     url = "https://www.warcraftlogs.com:443/v1/report/tables/"+view+"/"+str(code)
     params = {"api_key":key,
               "start":start, 
@@ -202,6 +282,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     return parse_json_to_table(json_data, view, code)
 
 def parse_json_to_table(json_data, view, code):
+    """Given json table data, construct an object containing the data"""
     if(view == "damage-done"):
         table = list()
         for entry in json_data["entries"]:
@@ -241,19 +322,23 @@ def parse_json_to_table(json_data, view, code):
         return json_data
 
 def generateReportList(json):
+    """Given a json listing of reports, create report objects and place in a list."""
     reports = []
     for report in json:
         reports.append(Report(report))
     return reports
 
 def generateUserReportList(username, start=None, end=None):
+    """Return a list of reports uploaded by the given WCL user."""
     return generateReportList(wow_reports_user(username, start=start, end=end))
 
 def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None):
+    """Return a list of reports matched to given guild."""
     return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end))
 
 
 def generateFightList(report_code):
+    """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code)
     allFriendlies = []
     allEnemies = []
