@@ -9,11 +9,11 @@ import sys
 from pycraftlogsclasses import *
 
 key = "yourAPIkey"
+baseURL = "https://www.warcraftlogs.com:443/v1/"
 
 def wow_zones():
     """Request a listing of zones and return a list of Zone objects."""
-    response = requests.get(
-    "https://www.warcraftlogs.com:443/v1/zones?api_key=" + key)
+    response = requests.get(baseURL + "zones?api_key=" + key)
     json_data = response.json()
     zones = list()
     for entry in json_data:
@@ -22,8 +22,7 @@ def wow_zones():
 
 def wow_classes():
     """Request a listing of playable classes and return a list of _Class objects."""
-    response = requests.get(
-    "https://www.warcraftlogs.com:443/v1/classes?api_key=" + key)
+    response = requests.get(baseURL + "classes?api_key=" + key)
     json_data = response.json()
     classes = list()
     for entry in json_data:
@@ -55,7 +54,7 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
 
     Further details in WCL API docs
     """
-    url = "https://www.warcraftlogs.com:443/v1/rankings/encounter/"+str(encounter_id)
+    url = baseURL + "rankings/encounter/" + str(encounter_id)
     params = {"api_key":key,
               "metric":metric,
               "size":size,
@@ -69,7 +68,8 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
               "server":server,
               "region":region,
               "page":page,
-              "filter":filter_str}
+              "filter":filter_str
+              }
     response = requests.get(url, params=params)
     print(response.url + " " + str(response.status_code))
     response.raise_for_status()
@@ -90,7 +90,7 @@ def wow_rankings_character(character_name, server_name, server_region,
 
     Further details in WCL API docs
     """
-    url = "https://www.warcraftlogs.com:443/v1/rankings/character/"+character_name+"/"+server_name+"/"+server_region
+    url = baseURL + "rankings/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
               "encounter":encounter_id,
@@ -118,7 +118,7 @@ def wow_parses(character_name, server_name, server_region, zone=None,
 
     Further details in WCL API docs
     """
-    url = "https://www.warcraftlogs.com:443/v1/parses/character/"+character_name+"/"+server_name+"/"+server_region
+    url = baseURL + "parses/character/"+character_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "zone":zone,
               "encounter":encounter_id,
@@ -140,7 +140,7 @@ def wow_reports_guild(guild_name, server_name, server_region,
     start -- UNIX start time to contain search
     end -- UNIX end time to contain search
     """
-    url = "https://www.warcraftlogs.com:443/v1/reports/guild/"+guild_name+"/"+server_name+"/"+server_region
+    url = baseURL + "reports/guild/"+guild_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
               "start":start,
               "end":end}
@@ -157,7 +157,7 @@ def wow_reports_user(username, start=None, end=None):
     start -- UNIX start time to contain search
     end -- UNIX end time to contain search
     """
-    url = "https://www.warcraftlogs.com:443/v1/reports/user/"+username
+    url = baseURL+"reports/user/"+username
     params = {"api_key":key,
               "start":start,
               "end":end}
@@ -174,7 +174,7 @@ def wow_report_fights(code, translate=None):
     Keyword arguments:
     translate -- Flag to determine if results should be translated to host lang.
     """
-    url = "https://www.warcraftlogs.com:443/v1/report/fights/"+code
+    url = baseURL + "report/fights/"+code
     params = {"api_key":key,
               "translate":translate}
     response = requests.get(url, params=params)
@@ -202,7 +202,7 @@ def wow_report_events(code, start=None, end=None, actorid=None,
     filter_str -- Filter string for advanced users.
     translate -- Flag to determine if results should be translated to host lang.
     """
-    url = "https://www.warcraftlogs.com:443/v1/report/events/"+code
+    url = baseURL + "report/events/"+code
     params = {"api_key":key,
               "start":start, 
               "end":end, 
@@ -255,7 +255,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
 
     See WCL API docs for more info
     """
-    url = "https://www.warcraftlogs.com:443/v1/report/tables/"+view+"/"+str(code)
+    url = baseURL+"report/tables/"+view+"/"+str(code)
     params = {"api_key":key,
               "start":start, 
               "end":end, 
