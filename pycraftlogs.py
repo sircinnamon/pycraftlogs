@@ -340,19 +340,11 @@ def generateGuildReportList(guild_name, server_name, server_region, start=None, 
 def generateFightList(report_code):
     """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code)
-    allFriendlies = []
-    allEnemies = []
-    allFriendlyPets = []
-    allEnemyPets = []
+    allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
+    allEnemies = list(map(FightParticipant, json["enemies"], report_code)) if len(json["enemies"])>0 else list()
+    allFriendlyPets = list(map(FightParticipant, json["friendlyPets"], report_code)) if len(json["friendlyPets"])>0 else list()
+    allEnemyPets = list(map(FightParticipant, json["enemyPets"], report_code)) if len(json["enemyPets"])>0 else list()
     fightList = []
-    for friendly in json["friendlies"]:
-        allFriendlies.append(FightParticipant(friendly, report_code))
-    for enemy in json["enemies"]:
-        allEnemies.append(FightParticipant(enemy, report_code))
-    for friendlypet in json["friendlyPets"]:
-        allFriendlyPets.append(FightParticipant(friendlypet, report_code))
-    for enemypet in json["enemyPets"]:
-        allEnemyPets.append(FightParticipant(enemypet, report_code))
     for fight in json["fights"]:
         friendlies = []
         enemies = []
@@ -379,6 +371,10 @@ def generateFightList(report_code):
         else:
             fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
+
+def updateKey(new_API_key):
+    api_key=new_API_key
+    return True
 
 key=sys.argv[1]
 lst = generateGuildReportList("Vitium","Korgath","US",start=1490241142311)
