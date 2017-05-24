@@ -1,4 +1,5 @@
 class Report(object):
+    """Represents a report uploaded to WCL."""
     def __init__(self, json):
         self.json = json
         self.id = json["id"]
@@ -9,6 +10,7 @@ class Report(object):
         self.zone = json["zone"]
 
 class Fight(object):
+    """Represents a logged fight."""
     def __init__(self, json, code, friendlies, enemies, friendlyPets, enemyPets, phases):
         self.json = json
         self.code = code
@@ -32,6 +34,7 @@ class Fight(object):
         self.phases = phases
 
 class TrashFight(object):
+    """Represents a logged trash fight."""
     def __init__(self, json, code, friendlies, enemies, friendlyPets, enemyPets, phases):
         self.json = json
         self.code = code
@@ -48,6 +51,7 @@ class TrashFight(object):
         self.phases = phases
 
 class FightParticipant(object):
+    """Represents an entity which participated in fight events."""
     def __init__(self, json, code):
         self.json = json
         self.code = code
@@ -58,11 +62,13 @@ class FightParticipant(object):
         self.fights = FightAttendance(json["fights"])
 
 class FightParticipantPet(FightParticipant):
+    """Represents an pet entity which participated in fight events."""
     def __init__(self, json, code):
         super(FightParticipantPet,self).__init__(json, code)
         self.petOwner = json["petOwner"]
 
 class FightAttendance(object):
+    """Represents an attendance list for fights a single player participated in."""
     def __init__(self, json):
         #json is a list of dictionaries, with possible ids, isntances and groups
         self.json = json
@@ -70,6 +76,7 @@ class FightAttendance(object):
         for x in json:
             self.attendedFights.append(x["id"])
     def getInstances(self, fightId):
+        """Retrieve how many instances of the parent were present in the fight specified."""
         for x in json:
             if x["id"] == fightId:
                 if x.has_key("instances"):
@@ -78,6 +85,8 @@ class FightAttendance(object):
                     return 1
         return 0
     def getGroups(self, fightId):
+        """Retrieve how many groups of the parent were present in the fight specified."""
+        #Not actually sure what this means.
         for x in json:
             if x["id"] == fightId:
                 if x.has_key("groups"):
@@ -86,6 +95,7 @@ class FightAttendance(object):
                     return 1
         return 0
     def attended(self, fightId):
+        """Return true if parent was present for at least one attempt of given fight."""
         return (self.attendedFights.count(fightId)>0)
 
 #Table views: "damage-done", "damage-taken", "healing", 
@@ -93,6 +103,7 @@ class FightAttendance(object):
 #"survivability", "resources", "resource-gains"
 
 class TableEntry(object):
+    """Represents an entity's information on a standard data table."""
     #Superclass for standard table entries
     #damage-done, damage-taken, healing, casts, summons, deaths
     def __init__(self, json, code, totalTime):
@@ -109,6 +120,7 @@ class TableEntry(object):
         self.totalTime = totalTime
 
 class DamageDoneTableEntry(TableEntry):
+    """Represents an entity's information on a damage-done data table."""
     #Represents one entry on a damage-done table
     def __init__(self, json, code, totalTime):
         super(DamageDoneTableEntry,self).__init__(json, code, totalTime)
@@ -123,6 +135,7 @@ class DamageDoneTableEntry(TableEntry):
         self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if json.has_key("pets") else None
 
 class DamageTakenTableEntry(TableEntry):
+    """Represents an entity's information on a damage-taken data table."""
     #Represents one entry on a damage-taken table
     def __init__(self, json, code, totalTime):
         super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
@@ -135,6 +148,7 @@ class DamageTakenTableEntry(TableEntry):
         self.sources = list(map(DamageTakenSource,json["sources"]))
 
 class HealingTableEntry(TableEntry):
+    """Represents an entity's information on a healing data table."""
     #Represents one entry on a healing table
     def __init__(self, json, code, totalTime):
         super(HealingTableEntry,self).__init__(json, code, totalTime)
@@ -147,6 +161,7 @@ class HealingTableEntry(TableEntry):
         self.targets = list(map(BasicEntity,json["targets"]))
 
 class CastsTableEntry(TableEntry):
+    """Represents an entity's information on a casts data table."""
     #Represents one entry on a Casts table
     def __init__(self, json, code, totalTime):
         super(CastsTableEntry,self).__init__(json, code, totalTime)
@@ -158,6 +173,7 @@ class CastsTableEntry(TableEntry):
         self.targets = list(map(BasicEntity,json["targets"]))
 
 class SummonsTableEntry(TableEntry):
+    """Represents an entity's information on a summons data table."""
     #Represents one entry on a Summons table
     def __init__(self, json, code, totalTime):
         super(SummonsTableEntry,self).__init__(json, code, totalTime)
@@ -169,7 +185,7 @@ class SummonsTableEntry(TableEntry):
         self.targets = list(map(BasicEntity,json["targets"]))
 
 class DeathsTableEntry(object):
-    #Nonstandard table entry
+    """Represents an entity's information on a deaths data table."""
     def __init__(self, json, code):
         self.json = json
         self.code = code
@@ -188,7 +204,7 @@ class DeathsTableEntry(object):
         self.killingBlow = DeathKillingBlow(json["killingBlow"]) if json.has_key("killingBlow") else None
 
 class AuraTableEntry(object):
-    #represents an entry on buffs/debuffs table
+    """Represents an entity's information on a aura data table."""
     def __init__(self, json, code, useTargets, totalTime, startTime, endTime):
         self.json = json
         self.code = code
@@ -206,7 +222,7 @@ class AuraTableEntry(object):
 
 
 class Gear(object):
-    #Represents an equipped piece of gear
+    """Represents a single piece of equipment."""
     def __init__(self, json):
         self.json = json
         self.id = json["id"]
@@ -221,7 +237,7 @@ class Gear(object):
         self.permanentEnchantName = json["permanentEnchantName"] if json.has_key("permanentEnchantName") else None
 
 class Gem(object):
-    #represents a socketed gem
+    """Represents a socketed gem on a piece of equipment."""
     def __init__(self, json):
         self.json = json
         self.id = json["id"]
@@ -229,7 +245,7 @@ class Gem(object):
         self.icon = json["icon"]
 
 class Talent(object):
-    #represents a selected talent
+    """Represents a players current selected talent."""
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -238,7 +254,7 @@ class Talent(object):
         self.abilityIcon = json["abilityIcon"]
 
 class Ability(object):
-    #Parent class for an ability
+    """Parent class representing an ability."""
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -246,13 +262,13 @@ class Ability(object):
         self.type = json["type"]
 
 class DamageTakenAbility(Ability):
-    #Extended ability for fields on damage taken table
+    """Extended ability for field on damage taken table"""
     def __init__(self, json):
         super(DamageTakenAbility,self).__init__(json)
         self.totalReduced = json["totalReduced"]if json.has_key("totalReduced") else 0
 
 class BasicEntity(object):
-    #Parent class for an entity in a fight on a table
+    """Parent class for an entity in a fight on a table."""
     #Applies as Target for DamageDone and Healing tables
     def __init__(self, json):
         self.json = json
@@ -261,13 +277,13 @@ class BasicEntity(object):
         self.type = json["type"]
 
 class DamageTakenSource(BasicEntity):
-    #SubClass for a source of damage taken on damage taken table
+    """SubClass for a source of damage taken on damage taken table."""
     def __init__(self, json):
         super(DamageTakenSource,self).__init__(json)
         self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
 
 class Pet(object):
-    #parent class for a pet attached to a layers table entry
+    """Parent class for a pet attached to a players table entry."""
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -278,14 +294,14 @@ class Pet(object):
         self.total = json["total"]
 
 class DamageDoneTableEntryPet(Pet):
-    #Extended for extra damage-done view
+    """Extended Pet for damage-done view fields."""
     def __init__(self, json):
         super(DamageDoneTableEntryPet,self).__init__(json)
         self.totalReduced = json["totalReduced"]
         self.activeTime = json["activeTime"]
 
 class DeathHistory(object):
-    #Stores the pre death damage or healing
+    """Represents the abilities targeted by preceeding death."""
     def __init__(self, json):
         self.json = json
         self.total = json["total"]
@@ -296,7 +312,7 @@ class DeathHistory(object):
         self.sources = list(map(BasicEntity,json["sources"]))
 
 class Event(object):
-    #Stores the pre death damage or healing
+    """Represents one event in a log. May be an ability cast, auto-attack, etc."""
     def __init__(self, json):
         self.json = json
         self.timestamp = json["timestamp"]
@@ -314,7 +330,7 @@ class Event(object):
         self.tick = json["tick"] if json.has_key("tick") else False
 
 class DeathKillingBlow(object):
-    #represents an ability generally
+    """Represents the ability or event which cause death."""
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -323,7 +339,7 @@ class DeathKillingBlow(object):
         self.abilityIcon = json["abilityIcon"]
 
 class EventSource(object):
-    #represents a source of death that has no ID
+    """Represents a source of event that has no relational ID."""
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -333,42 +349,42 @@ class EventSource(object):
         self.icon = json["icon"]
 
 class AuraBand(object):
-	#represents a band of time at which an aura was active
-	def __init__(self, json):
-		self.startTime = json["startTime"]
-		self.endTime = json["endTime"]
+    """represents a band of time at which an aura was active"""
+    def __init__(self, json):
+        self.startTime = json["startTime"]
+        self.endTime = json["endTime"]
 
 class Zone(object):
-	#represents zone on the zone list
-	def __init__(self, json):
-		self.id = json["id"]
-		self.name = json["name"]
-		self.frozen = json["frozen"] if json.has_key("frozen") else False
-		self.encounters = list(map(Encounter, json["encounters"])) if json.has_key("encounters") else None
-		self.brackets = list(map(Bracket, json["brackets"])) if json.has_key("brackets") else None
+    """Represents one zone on the zone list of the API."""
+    def __init__(self, json):
+        self.id = json["id"]
+        self.name = json["name"]
+        self.frozen = json["frozen"] if json.has_key("frozen") else False
+        self.encounters = list(map(Encounter, json["encounters"])) if json.has_key("encounters") else None
+        self.brackets = list(map(Bracket, json["brackets"])) if json.has_key("brackets") else None
 
 class Encounter(object):
-	#represents a single possible encounter in a raid
-	def __init__(self, json):
-		self.id = json["id"]
-		self.name = json["name"]
+    """Represents a single possible encounter in a raid."""
+    def __init__(self, json):
+        self.id = json["id"]
+        self.name = json["name"]
 
 class Bracket(object):
-	#represents a single bracket in a raid
-	def __init__(self, json):
-		self.id = json["id"]
-		self.name = json["name"]
+    """Represents a single bracket of a raid. (Usually an ilvl range.)"""
+    def __init__(self, json):
+        self.id = json["id"]
+        self.name = json["name"]
 
 class _Class(object):
-	#represents a single playable character class
-	def __init__(self, json):
-		self.id = json["id"]
-		self.name = json["name"]
-		self.specs = list(map(Spec, json["specs"])) if json.has_key("specs") else None
+    """Represents a single playable character class"""
+    def __init__(self, json):
+        self.id = json["id"]
+        self.name = json["name"]
+        self.specs = list(map(Spec, json["specs"])) if json.has_key("specs") else None
 
 
 class Spec(object):
-	#represents a single class specialization
-	def __init__(self, json):
-		self.id = json["id"]
-		self.name = json["name"]
+    """Represents a single class specialization."""
+    def __init__(self, json):
+        self.id = json["id"]
+        self.name = json["name"]
