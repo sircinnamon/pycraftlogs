@@ -6,12 +6,12 @@ API to occur within any python program.
 """
 import requests
 import sys
-from . import pycraftlogsclasses
+from .pycraftlogsclasses import *
 
-key = "yourAPIkey"
+default_key = "yourAPIkey"
 baseURL = "https://www.warcraftlogs.com:443/v1/"
 
-def wow_zones():
+def wow_zones(key=default_key):
     """Request a listing of zones and return a list of Zone objects."""
     response = requests.get(baseURL + "zones?api_key=" + key)
     json_data = response.json()
@@ -20,7 +20,7 @@ def wow_zones():
         zones.append(Zone(entry))
     return zones
 
-def wow_classes():
+def wow_classes(key=default_key):
     """Request a listing of playable classes and return a list of _Class objects."""
     response = requests.get(baseURL + "classes?api_key=" + key)
     json_data = response.json()
@@ -34,7 +34,7 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
                            difficulty=None, partition=None, 
                            class_id=None, spec=None, bracket=None, 
                            limit=None, guild=None, server=None, 
-                           region=None, page=None, filter_str=None):
+                           region=None, page=None, filter_str=None,key=default_key):
     """Request a set of matching rankings for a specific encounter. NOTE: Currently not stored in a class
 
     Keyword arguments:
@@ -51,6 +51,7 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
     region  -- Specify which server region to query.
     page -- What "page" of results to retrieve. page size is "limit"
     filter_str -- special filter string for experienced users
+    key -- The public API key to use
 
     Further details in WCL API docs
     """
@@ -71,14 +72,14 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
               "filter":filter_str
               }
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
 
 def wow_rankings_character(character_name, server_name, server_region,
                            zone=None, encounter_id=None, metric=None,
-                           bracket=None, partition=None):
+                           bracket=None, partition=None, key=default_key):
     """Request a set of rankings for a specific character across all matching encounters. NOTE: Currently not stored in a class
 
     Keyword arguments:
@@ -98,14 +99,14 @@ def wow_rankings_character(character_name, server_name, server_region,
               "bracket":bracket,
               "partition":partition}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
 
 def wow_parses(character_name, server_name, server_region, zone=None,
                encounter_id=None, metric=None, bracket=None, 
-               compare=None, partition=None):
+               compare=None, partition=None, key=default_key):
     """Request a set of parses for a specific character across all matching encounters. NOTE: Currently not stored in a class
 
     Keyword arguments:
@@ -127,13 +128,13 @@ def wow_parses(character_name, server_name, server_region, zone=None,
               "compare":compare,
               "partition":partition}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
 
 def wow_reports_guild(guild_name, server_name, server_region,
-                      start=None, end=None):
+                      start=None, end=None, key=default_key):
     """Request a set of uploaded reports for a specified guild.
 
     Keyword arguments:
@@ -145,12 +146,12 @@ def wow_reports_guild(guild_name, server_name, server_region,
               "start":start,
               "end":end}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
 
-def wow_reports_user(username, start=None, end=None):
+def wow_reports_user(username, start=None, end=None, key=default_key):
     """Request a set of reports uploaded by a certain WCL user.
 
     Keyword arguments:
@@ -162,13 +163,13 @@ def wow_reports_user(username, start=None, end=None):
               "start":start,
               "end":end}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
 
 
-def wow_report_fights(code, translate=None):
+def wow_report_fights(code, translate=None, key=default_key):
     """Request a list of fights contained in a report.
 
     Keyword arguments:
@@ -186,7 +187,7 @@ def wow_report_fights(code, translate=None):
 def wow_report_events(code, start=None, end=None, actorid=None,
                       actorinstance=None, actorclass=None, cutoff=None,
                       encounter=None, wipes=None, difficulty=None,
-                      filter_str=None, translate=None):
+                      filter_str=None, translate=None, key=default_key):
     """Request a list of events contained in a report.
 
     Keyword arguments:
@@ -216,7 +217,7 @@ def wow_report_events(code, start=None, end=None, actorid=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return json_data
@@ -227,7 +228,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
                       targetinstance=None, targetclass=None, 
                       abilityid=None, options=None, cutoff=None, 
                       encounter=None, wipes=None, difficulty=None, 
-                      filter_str=None, translate=None):
+                      filter_str=None, translate=None, key=default_key):
     """Request a table of data from a specific report.
 
     View is the type of data the table displays, which may change the specific
@@ -276,7 +277,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return parse_json_to_table(json_data, view, code)
@@ -328,18 +329,18 @@ def generateReportList(json):
         reports.append(Report(report))
     return reports
 
-def generateUserReportList(username, start=None, end=None):
+def generateUserReportList(username, start=None, end=None, key=default_key):
     """Return a list of reports uploaded by the given WCL user."""
-    return generateReportList(wow_reports_user(username, start=start, end=end))
+    return generateReportList(wow_reports_user(username, start=start, end=end, key=key))
 
-def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None):
+def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None, key=default_key):
     """Return a list of reports matched to given guild."""
-    return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end))
+    return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end, key=key))
 
 
-def generateFightList(report_code):
+def generateFightList(report_code, key=default_key):
     """Return a list of fight objects contained in a given report."""
-    json = wow_report_fights(report_code)
+    json = wow_report_fights(report_code, key=key)
     allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
     allEnemies = list(map(FightParticipant, json["enemies"], report_code)) if len(json["enemies"])>0 else list()
     allFriendlyPets = list(map(FightParticipant, json["friendlyPets"], report_code)) if len(json["friendlyPets"])>0 else list()
@@ -373,5 +374,5 @@ def generateFightList(report_code):
     return fightList
 
 def updateKey(new_API_key):
-    api_key=new_API_key
+    default_key=new_API_key
     return True

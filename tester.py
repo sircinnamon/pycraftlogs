@@ -1,16 +1,20 @@
-import pycraftlogs
+from pycraftlogs import *
+import sys
 
 key=sys.argv[1]
-lst = generateGuildReportList("Vitium","Korgath","US",start=1490241142311)
+print(key)
+pycraftlogs.updateKey(key)
+print(pycraftlogs.default_key)
+lst = pycraftlogs.generateGuildReportList("Vitium","Korgath","US", key=key)
 for l in lst:
     print(l.title + " ("+l.id+")")
 recent_report_code = lst[len(lst)-1].id
 
-table = wow_report_tables("debuffs", recent_report_code, end=4058391)
+table = wow_report_tables("debuffs", recent_report_code, end=4058391, key=key)
 print("DEBUFFS")
 for entry in table:
     print(entry.name + " -> " + str(entry.totalUses))
     print("    "+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
 
-json_rankings = wow_rankings_encounter(1866, metric="hps", server="Korgath", region="US", guild="Vitium")
+json_rankings = wow_rankings_encounter(1866, metric="hps", server="Korgath", region="US", guild="Vitium", key=key)
 print(json_rankings["rankings"][1]["name"])

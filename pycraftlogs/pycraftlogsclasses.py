@@ -79,7 +79,7 @@ class FightAttendance(object):
         """Retrieve how many instances of the parent were present in the fight specified."""
         for x in json:
             if x["id"] == fightId:
-                if x.has_key("instances"):
+                if "instances" in x:
                     return x["instances"]
                 else:
                     return 1
@@ -89,7 +89,7 @@ class FightAttendance(object):
         #Not actually sure what this means.
         for x in json:
             if x["id"] == fightId:
-                if x.has_key("groups"):
+                if "groups" in x:
                     return x["groups"]
                 else:
                     return 1
@@ -113,10 +113,10 @@ class TableEntry(object):
         self.id = json["id"]
         self.guid = json["guid"]
         self.type = json["type"]
-        self.itemLevel = json["itemLevel"] if json.has_key("itemLevel") else None #Hati screws this up too
+        self.itemLevel = json["itemLevel"] if "itemLevel" in json else None #Hati screws this up too
         self.icon = json["icon"]
-        self.gear = list(map(Gear, json["gear"])) if json.has_key("gear") else None #Hati comes up as a non pet but has no gear or talents
-        self.talents = list(map(Talent, json["talents"])) if json.has_key("talents") else None # ...relatable
+        self.gear = list(map(Gear, json["gear"])) if "gear" in json else None #Hati comes up as a non pet but has no gear or talents
+        self.talents = list(map(Talent, json["talents"])) if "talents" in json else None # ...relatable
         self.totalTime = totalTime
 
 class DamageDoneTableEntry(TableEntry):
@@ -124,23 +124,23 @@ class DamageDoneTableEntry(TableEntry):
     def __init__(self, json, code, totalTime):
         super(DamageDoneTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
-        self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+        self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(Ability,json["abilities"]))
         #exclude? May always be empty on this table
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.targets = list(map(BasicEntity,json["targets"]))
-        self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if json.has_key("pets") else None
+        self.pets = list(map(DamageDoneTableEntryPet, json["pets"])) if "pets" in json else None
 
 class DamageTakenTableEntry(TableEntry):
     """Represents an entity's information on a damage-taken data table."""
     def __init__(self, json, code, totalTime):
         super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
-        self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+        self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.sources = list(map(DamageTakenSource,json["sources"]))
@@ -151,7 +151,7 @@ class HealingTableEntry(TableEntry):
         super(HealingTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.overheal = json["overheal"]
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
@@ -163,7 +163,7 @@ class CastsTableEntry(TableEntry):
         super(CastsTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.targets = list(map(BasicEntity,json["targets"]))
@@ -174,7 +174,7 @@ class SummonsTableEntry(TableEntry):
         super(SummonsTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.targets = list(map(BasicEntity,json["targets"]))
@@ -196,7 +196,7 @@ class DeathsTableEntry(object):
         self.deathWindow = json["deathWindow"]
         self.overkill = json["overkill"]
         self.events = list(map(Event,json["events"]))
-        self.killingBlow = DeathKillingBlow(json["killingBlow"]) if json.has_key("killingBlow") else None
+        self.killingBlow = DeathKillingBlow(json["killingBlow"]) if "killingBlow" in json else None
 
 class AuraTableEntry(object):
     """Represents an entity's information on a aura data table."""
@@ -224,11 +224,11 @@ class Gear(object):
         self.itemLevel = json["itemLevel"]
         self.quality = json["quality"]
         self.icon = json["icon"]
-        self.name = json["name"] if json.has_key("name") else None
-        self.gems = list(map(Gem, json["gems"])) if json.has_key("gems") else None
-        self.bonusIDs = json["bonusIDs"] if json.has_key("bonusIDs") else None
-        self.permanentEnchant = json["permanentEnchant"] if json.has_key("permanentEnchant") else None
-        self.permanentEnchantName = json["permanentEnchantName"] if json.has_key("permanentEnchantName") else None
+        self.name = json["name"] if "name" in json else None
+        self.gems = list(map(Gem, json["gems"])) if "gems" in json else None
+        self.bonusIDs = json["bonusIDs"] if "bonusIDs" in json else None
+        self.permanentEnchant = json["permanentEnchant"] if "permanentEnchant" in json else None
+        self.permanentEnchantName = json["permanentEnchantName"] if "permanentEnchantName" in json else None
 
 class Gem(object):
     """Represents a socketed gem on a piece of equipment."""
@@ -259,7 +259,7 @@ class DamageTakenAbility(Ability):
     """Extended ability for field on damage taken table"""
     def __init__(self, json):
         super(DamageTakenAbility,self).__init__(json)
-        self.totalReduced = json["totalReduced"]if json.has_key("totalReduced") else 0
+        self.totalReduced = json["totalReduced"]if "totalReduced" in json else 0
 
 class BasicEntity(object):
     """Parent class for an entity in a fight on a table."""
@@ -274,7 +274,7 @@ class DamageTakenSource(BasicEntity):
     """SubClass for a source of damage taken on damage taken table."""
     def __init__(self, json):
         super(DamageTakenSource,self).__init__(json)
-        self.totalReduced = json["totalReduced"] if json.has_key("totalReduced") else 0
+        self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
 
 class Pet(object):
     """Parent class for a pet attached to a players table entry."""
@@ -300,7 +300,7 @@ class DeathHistory(object):
         self.json = json
         self.total = json["total"]
         self.activeTime = json["activeTime"]
-        self.activeTimeReduced = json["activeTimeReduced"] if json.has_key("activeTimeReduced") else 0
+        self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(Ability,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.sources = list(map(BasicEntity,json["sources"]))
@@ -311,17 +311,17 @@ class Event(object):
         self.json = json
         self.timestamp = json["timestamp"]
         self.type = json["type"]
-        self.sourceID = json["sourceID"] if json.has_key("sourceID") else -1
-        self.source = EventSource(json["source"]) if json.has_key("source") else None
+        self.sourceID = json["sourceID"] if "sourceID" in json else -1
+        self.source = EventSource(json["source"]) if "source" in json else None
         self.sourceIsFriendly = json["sourceIsFriendly"]
         self.targetID = json["targetID"]
         self.targetIsFriendly = json["targetIsFriendly"]
         self.ability = DeathKillingBlow(json["ability"])
         self.hitType = json["hitType"]
         self.amount = json["amount"]
-        self.overkill = json["overkill"] if json.has_key("overkill") else 0
+        self.overkill = json["overkill"] if "overkill" in json else 0
         self.absorbed = json["absorbed"]
-        self.tick = json["tick"] if json.has_key("tick") else False
+        self.tick = json["tick"] if "tick" in json else False
 
 class DeathKillingBlow(object):
     """Represents the ability or event which cause death."""
@@ -353,9 +353,9 @@ class Zone(object):
     def __init__(self, json):
         self.id = json["id"]
         self.name = json["name"]
-        self.frozen = json["frozen"] if json.has_key("frozen") else False
-        self.encounters = list(map(Encounter, json["encounters"])) if json.has_key("encounters") else None
-        self.brackets = list(map(Bracket, json["brackets"])) if json.has_key("brackets") else None
+        self.frozen = json["frozen"] if "frozen" in json else False
+        self.encounters = list(map(Encounter, json["encounters"])) if "encounters" in json else None
+        self.brackets = list(map(Bracket, json["brackets"])) if "brackets" in json else None
 
 class Encounter(object):
     """Represents a single possible encounter in a raid."""
@@ -374,7 +374,7 @@ class _Class(object):
     def __init__(self, json):
         self.id = json["id"]
         self.name = json["name"]
-        self.specs = list(map(Spec, json["specs"])) if json.has_key("specs") else None
+        self.specs = list(map(Spec, json["specs"])) if "specs" in json else None
 
 class Spec(object):
     """Represents a single class specialization."""
