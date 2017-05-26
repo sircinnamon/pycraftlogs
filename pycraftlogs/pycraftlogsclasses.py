@@ -121,7 +121,6 @@ class TableEntry(object):
 
 class DamageDoneTableEntry(TableEntry):
     """Represents an entity's information on a damage-done data table."""
-    #Represents one entry on a damage-done table
     def __init__(self, json, code, totalTime):
         super(DamageDoneTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
@@ -136,7 +135,6 @@ class DamageDoneTableEntry(TableEntry):
 
 class DamageTakenTableEntry(TableEntry):
     """Represents an entity's information on a damage-taken data table."""
-    #Represents one entry on a damage-taken table
     def __init__(self, json, code, totalTime):
         super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
@@ -149,7 +147,6 @@ class DamageTakenTableEntry(TableEntry):
 
 class HealingTableEntry(TableEntry):
     """Represents an entity's information on a healing data table."""
-    #Represents one entry on a healing table
     def __init__(self, json, code, totalTime):
         super(HealingTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
@@ -162,7 +159,6 @@ class HealingTableEntry(TableEntry):
 
 class CastsTableEntry(TableEntry):
     """Represents an entity's information on a casts data table."""
-    #Represents one entry on a Casts table
     def __init__(self, json, code, totalTime):
         super(CastsTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
@@ -174,7 +170,6 @@ class CastsTableEntry(TableEntry):
 
 class SummonsTableEntry(TableEntry):
     """Represents an entity's information on a summons data table."""
-    #Represents one entry on a Summons table
     def __init__(self, json, code, totalTime):
         super(SummonsTableEntry,self).__init__(json, code, totalTime)
         self.total = json["total"]
@@ -219,7 +214,6 @@ class AuraTableEntry(object):
         self.scanTotalTime = totalTime
         self.scanStartTime = startTime #start time of scan, not buff
         self.scanEndTime = endTime #end time of scan, not buff
-
 
 class Gear(object):
     """Represents a single piece of equipment."""
@@ -381,7 +375,6 @@ class _Class(object):
         self.id = json["id"]
         self.name = json["name"]
         self.specs = list(map(Spec, json["specs"])) if json.has_key("specs") else None
-
 
 class Spec(object):
     """Represents a single class specialization."""
