@@ -51,7 +51,7 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
     region  -- Specify which server region to query.
     page -- What "page" of results to retrieve. page size is "limit"
     filter_str -- special filter string for experienced users
-    key -- The public API key to use
+    key -- The public API key to use.
 
     Further details in WCL API docs
     """
@@ -88,6 +88,7 @@ def wow_rankings_character(character_name, server_name, server_region,
     metric -- What metric to rank by. e.g. dps, hps etc.
     bracket -- Bracket to query. See /zones response for info.
     partition -- What partition to query, if multiple exist.
+    key -- The public API key to use.
 
     Further details in WCL API docs
     """
@@ -116,6 +117,7 @@ def wow_parses(character_name, server_name, server_region, zone=None,
     bracket -- Bracket to query. See /zones response for info.
     compare -- Defines whether to compare vs rankings or statistics. 0 or 1 respectively.
     partition -- What partition to query, if multiple exist.
+    key -- The public API key to use.
 
     Further details in WCL API docs
     """
@@ -140,6 +142,7 @@ def wow_reports_guild(guild_name, server_name, server_region,
     Keyword arguments:
     start -- UNIX start time to contain search
     end -- UNIX end time to contain search
+    key -- The public API key to use.
     """
     url = baseURL + "reports/guild/"+guild_name+"/"+server_name+"/"+server_region
     params = {"api_key":key,
@@ -157,6 +160,7 @@ def wow_reports_user(username, start=None, end=None, key=default_key):
     Keyword arguments:
     start -- UNIX start time to contain search
     end -- UNIX end time to contain search
+    key -- The public API key to use.
     """
     url = baseURL+"reports/user/"+username
     params = {"api_key":key,
@@ -174,6 +178,7 @@ def wow_report_fights(code, translate=None, key=default_key):
 
     Keyword arguments:
     translate -- Flag to determine if results should be translated to host lang.
+    key -- The public API key to use.
     """
     url = baseURL + "report/fights/"+code
     params = {"api_key":key,
@@ -202,6 +207,7 @@ def wow_report_events(code, start=None, end=None, actorid=None,
     difficulty -- Only view events occurring in specified difficulty.
     filter_str -- Filter string for advanced users.
     translate -- Flag to determine if results should be translated to host lang.
+    key -- The public API key to use.
     """
     url = baseURL + "report/events/"+code
     params = {"api_key":key,
@@ -253,6 +259,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
     difficulty -- Only view events occurring in specified difficulty.
     filter_str -- Filter string for advanced users.
     translate -- Flag to determine if results should be translated to host lang.
+    key -- The public API key to use.
 
     See WCL API docs for more info
     """
