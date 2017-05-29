@@ -3,9 +3,9 @@ import sys
 
 key=sys.argv[1]
 print(key)
-pycraftlogs.updateKey(key)
+pycraftlogs.update_key(key)
 print(pycraftlogs.default_key)
-lst = pycraftlogs.generateGuildReportList("Vitium","Korgath","US", key=key)
+lst = pycraftlogs.generate_guild_report_list("Vitium","Korgath","US", key=key)
 for l in lst:
     print(l.title + " ("+l.id+")")
 recent_report_code = lst[len(lst)-1].id

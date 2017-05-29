@@ -75,7 +75,7 @@ class FightAttendance(object):
         self.attendedFights = []
         for x in json:
             self.attendedFights.append(x["id"])
-    def getInstances(self, fightId):
+    def get_instances(self, fightId):
         """Retrieve how many instances of the parent were present in the fight specified."""
         for x in json:
             if x["id"] == fightId:
@@ -84,7 +84,7 @@ class FightAttendance(object):
                 else:
                     return 1
         return 0
-    def getGroups(self, fightId):
+    def get_groups(self, fightId):
         """Retrieve how many groups of the parent were present in the fight specified."""
         #Not actually sure what this means.
         for x in json:

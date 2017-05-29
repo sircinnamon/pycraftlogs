@@ -329,23 +329,23 @@ def parse_json_to_table(json_data, view, code):
     else:
         return json_data
 
-def generateReportList(json):
+def generate_report_list(json):
     """Given a json listing of reports, create report objects and place in a list."""
     reports = []
     for report in json:
         reports.append(Report(report))
     return reports
 
-def generateUserReportList(username, start=None, end=None, key=default_key):
+def generate_user_report_list(username, start=None, end=None, key=default_key):
     """Return a list of reports uploaded by the given WCL user."""
-    return generateReportList(wow_reports_user(username, start=start, end=end, key=key))
+    return generate_report_list(wow_reports_user(username, start=start, end=end, key=key))
 
-def generateGuildReportList(guild_name, server_name, server_region, start=None, end=None, key=default_key):
+def generate_guild_report_list(guild_name, server_name, server_region, start=None, end=None, key=default_key):
     """Return a list of reports matched to given guild."""
-    return generateReportList(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end, key=key))
+    return generate_report_list(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end, key=key))
 
 
-def generateFightList(report_code, key=default_key):
+def generate_fight_list(report_code, key=default_key):
     """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code, key=key)
     allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
@@ -380,6 +380,6 @@ def generateFightList(report_code, key=default_key):
             fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
 
-def updateKey(new_API_key):
+def update_key(new_API_key):
     default_key=new_API_key
     return True
