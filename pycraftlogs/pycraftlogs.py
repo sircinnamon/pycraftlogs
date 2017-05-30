@@ -172,6 +172,29 @@ def wow_reports_user(username, start=None, end=None, key=default_key):
     json_data = response.json()
     return json_data
 
+def wow_get_report(code, translate=None, key=default_key):
+    """Create a report object from a given report ID
+
+    Keyword arguments:
+    translate -- Flag to determine if results should be translated to host lang.
+    key -- The public API key to use.
+    """
+    url = baseURL + "report/fights/"+code
+    params = {"api_key":key,
+              "translate":translate}
+    response = requests.get(url, params=params)
+    print(response.url + " " + str(response.status_code))
+    response.raise_for_status()
+    json_data = response.json()
+    json_data["id"]=code
+    del json_data["fights"]
+    del json_data["lang"]
+    del json_data["friendlies"]
+    del json_data["enemies"]
+    del json_data["friendlyPets"]
+    del json_data["enemyPets"]
+    del json_data["phases"]
+    return Report(json_data)
 
 def wow_report_fights(code, translate=None, key=default_key):
     """Request a list of fights contained in a report.

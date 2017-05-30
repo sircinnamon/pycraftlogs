@@ -18,3 +18,4 @@ for entry in table:
 
 json_rankings = wow_rankings_encounter(1866, metric="hps", server="Korgath", region="US", guild="Vitium", key=key)
 print(json_rankings["rankings"][1]["name"])
+print(wow_get_report(recent_report_code, key=key).title,)
