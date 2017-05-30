@@ -123,7 +123,7 @@ class DamageDoneTableEntry(TableEntry):
     """Represents an entity's information on a damage-done data table."""
     def __init__(self, json, code, totalTime):
         super(DamageDoneTableEntry,self).__init__(json, code, totalTime)
-        self.total = json["total"]
+        self.total = json["total"] if "total" in json else 0
         self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
@@ -137,7 +137,7 @@ class DamageTakenTableEntry(TableEntry):
     """Represents an entity's information on a damage-taken data table."""
     def __init__(self, json, code, totalTime):
         super(DamageTakenTableEntry,self).__init__(json, code, totalTime)
-        self.total = json["total"]
+        self.total = json["total"] if "total" in json else 0
         self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
@@ -149,7 +149,7 @@ class HealingTableEntry(TableEntry):
     """Represents an entity's information on a healing data table."""
     def __init__(self, json, code, totalTime):
         super(HealingTableEntry,self).__init__(json, code, totalTime)
-        self.total = json["total"]
+        self.total = json["total"] if "total" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.overheal = json["overheal"]
@@ -161,7 +161,7 @@ class CastsTableEntry(TableEntry):
     """Represents an entity's information on a casts data table."""
     def __init__(self, json, code, totalTime):
         super(CastsTableEntry,self).__init__(json, code, totalTime)
-        self.total = json["total"]
+        self.total = json["total"] if "total" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
@@ -172,7 +172,7 @@ class SummonsTableEntry(TableEntry):
     """Represents an entity's information on a summons data table."""
     def __init__(self, json, code, totalTime):
         super(SummonsTableEntry,self).__init__(json, code, totalTime)
-        self.total = json["total"]
+        self.total = json["total"] if "total" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
