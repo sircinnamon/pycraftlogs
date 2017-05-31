@@ -20,7 +20,7 @@ class Fight(object):
         self.boss = json["boss"]
         self.size = json["size"]
         self.difficulty = json["difficulty"]
-        self.kill = (json["kill"]=="true")
+        self.kill = json["kill"]
         self.partial = json["partial"]
         self.bossPercentage = json["bossPercentage"] #WCL api uses camelcase here but underscore for start_time... sometimes
         self.fightPercentage = json["fightPercentage"]
