@@ -152,7 +152,7 @@ class HealingTableEntry(TableEntry):
         self.total = json["total"] if "total" in json else 0
         self.activeTime = json["activeTime"]
         self.activeTimeReduced = json["activeTimeReduced"] if "activeTimeReduced" in json else 0
-        self.overheal = json["overheal"]
+        self.overheal = json["overheal"] if "overheal" in json else 0
         self.abilities = list(map(DamageTakenAbility,json["abilities"]))
         self.damageAbilities = list(map(Ability,json["damageAbilities"]))
         self.targets = list(map(BasicEntity,json["targets"]))
