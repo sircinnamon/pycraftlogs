@@ -394,9 +394,10 @@ def generate_fight_list(report_code, key=default_key):
         for enemypet in allEnemyPets:
             if(enemypet.fights.attended(fight["id"])):
                 enemypets.append(enemypet)
-        for boss in json["phases"]:
-            if(boss["boss"] == fight["boss"]):
-                phases = boss["phases"]
+        if("phases" in json):
+            for boss in json["phases"]:
+                if(boss["boss"] == fight["boss"]):
+                    phases = boss["phases"]
         if(fight["boss"]==0):
             fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))    
         else:
