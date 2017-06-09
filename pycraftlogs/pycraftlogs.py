@@ -307,37 +307,57 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    #print(response.url + " " + str(response.status_code))
+    print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
-    return parse_json_to_table(json_data, view, code)
+    return parse_json_to_table(json_data, view, code, bysource=(params["sourceid"] is not None))
 
-def parse_json_to_table(json_data, view, code):
+def parse_json_to_table(json_data, view, code, bysource=False):
     """Given json table data, construct an object containing the data"""
     if(view == "damage-done"):
         table = list()
-        for entry in json_data["entries"]:
-            table.append(DamageDoneTableEntry(entry, code, json_data["totalTime"]))
+        if(bysource):
+            for entry in json_data["entries"]:
+                table.append(DamageDoneBySourceTableEntry(entry, code, json_data["totalTime"]))
+        else:
+            for entry in json_data["entries"]:
+                table.append(DamageDoneTableEntry(entry, code, json_data["totalTime"]))
         return table
     elif(view == "damage-taken"):
         table = list()
-        for entry in json_data["entries"]:
-            table.append(DamageTakenTableEntry(entry, code, json_data["totalTime"]))
+        if(bysource):
+            for entry in json_data["entries"]:
+                table.append(DamageTakenBySourceTableEntry(entry, code, json_data["totalTime"]))
+        else:
+            for entry in json_data["entries"]:
+                table.append(DamageTakenTableEntry(entry, code, json_data["totalTime"]))
         return table
     elif(view == "healing"):
         table = list()
-        for entry in json_data["entries"]:
-            table.append(HealingTableEntry(entry, code, json_data["totalTime"]))
+        if(bysource):
+            for entry in json_data["entries"]:
+                table.append(HealingBySourceTableEntry(entry, code, json_data["totalTime"]))
+        else:
+            for entry in json_data["entries"]:
+                table.append(HealingTableEntry(entry, code, json_data["totalTime"]))
         return table
     elif(view == "casts"):
         table = list()
-        for entry in json_data["entries"]:
-            table.append(CastsTableEntry(entry, code, json_data["totalTime"]))
+        if(bysource):
+            for entry in json_data["entries"]:
+                table.append(CastsBySourceTableEntry(entry, code, json_data["totalTime"]))
+        else:
+            for entry in json_data["entries"]:
+                table.append(CastsTableEntry(entry, code, json_data["totalTime"]))
         return table
     elif(view == "summons"):
         table = list()
-        for entry in json_data["entries"]:
-            table.append(SummonsTableEntry(entry, code, json_data["totalTime"]))
+        if(bysource):
+            for entry in json_data["entries"]:
+                table.append(SummonsBySourceTableEntry(entry, code, json_data["totalTime"]))
+        else:
+            for entry in json_data["entries"]:
+                table.append(SummonsTableEntry(entry, code, json_data["totalTime"]))
         return table
     elif(view == "deaths"):
         table = list()

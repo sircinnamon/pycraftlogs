@@ -264,6 +264,7 @@ class DamageTakenAbility(Ability):
 class BasicEntity(object):
     """Parent class for an entity in a fight on a table."""
     #Applies as Target for DamageDone and Healing tables
+    #Also as a Source/Target on BySource tables
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
@@ -381,3 +382,93 @@ class Spec(object):
     def __init__(self, json):
         self.id = json["id"]
         self.name = json["name"]
+
+class BySourceTableEntry(object):
+    """Represents an entity's information on a standard-view, by source data table."""
+    #Superclass for table entries for a specific source (passed a sourceid)
+    #damage-done, damage-taken, healing, casts, summons, deaths
+    def __init__(self, json, code, totalTime):
+        self.json = json
+        self.code = code
+        self.name = json["name"]
+        self.guid = json["guid"]
+        self.actor = json["actor"] if "actor" in json else 0
+        self.type = json["type"]
+        self.actorName = json["actorName"] if "actorName" in json else None
+        self.actorIcon = json["actorIcon"] if "actorIcon" in json else None
+        self.actorType = json["actorType"] if "actorType" in json else None
+        self.total = json["total"]
+        self.composite = json["composite"] if "composite" in json else False
+        self.abilityIcon = json["abilityIcon"]
+        self.hitCount = json["hitCount"]
+        self.tickCount = json["tickCount"]
+        self.tickMissCount = json["tickMissCount"]
+        self.missCount = json["missCount"]
+        self.multistrikeHitCount = json["multistrikeHitCount"]
+        self.multistrikeTickCount = json["multistrikeTickCount"]
+        self.multistrikeMissCount = json["multistrikeMissCount"]
+        self.multistrikeTickMissCount = json["multistrikeTickMissCount"]
+        self.critHitCount = json["critHitCount"]
+        self.critTickCount = json["critTickCount"]
+        self.sources = list(map(BasicEntity, json["sources"]))
+        self.targets = list(map(BasicEntity, json["targets"]))
+        self.totalTime = totalTime
+
+class DamageDoneBySourceTableEntry(BySourceTableEntry):
+    """Represents an entity's information on a damage-done by source data table."""
+    def __init__(self, json, code, totalTime):
+        super(DamageDoneBySourceTableEntry,self).__init__(json, code, totalTime)
+        self.subentries = list([DamageDoneBySourceTableEntry(x,code,totalTime) for x in json["subentries"]]) if "subentries" in json else list()
+        self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
+        self.hitdetails = list(map(Details,json["hitdetails"]))
+        self.multistrikedetails = list(map(Details,json["multistrikedetails"]))
+        self.missdetails = list(map(Details,json["missdetails"]))
+        self.multistrikemissdetails = list(map(Details,json["multistrikemissdetails"]))
+
+class HealingBySourceTableEntry(BySourceTableEntry):
+    """Represents an entity's information on a healing by source data table."""
+    def __init__(self, json, code, totalTime):
+        super(HealingBySourceTableEntry,self).__init__(json, code, totalTime)
+        self.subentries = list([HealingBySourceTableEntry(x,code,totalTime) for x in json["subentries"]]) if "subentries" in json else list()
+        self.overheal = json["overheal"] if "overheal" in json else 0
+        self.hitdetails = list(map(Details,json["hitdetails"]))
+        self.multistrikedetails = list(map(Details,json["multistrikedetails"]))
+        self.missdetails = list(map(Details,json["missdetails"]))
+        self.multistrikemissdetails = list(map(Details,json["multistrikemissdetails"]))
+
+class DamageTakenBySourceTableEntry(BySourceTableEntry):
+    """Represents an entity's information on a damage-taken by source data table."""
+    def __init__(self, json, code, totalTime):
+        super(DamageTakenBySourceTableEntry,self).__init__(json, code, totalTime)
+        self.subentries = list([DamageTakenBySourceTableEntry(x,code,totalTime) for x in json["subentries"]]) if "subentries" in json else list()
+        self.uptime = json["uptime"] if "uptime" in json else 0
+        self.uses = json["uses"] if "uses" in json else 0
+        self.hitdetails = list(map(Details,json["hitdetails"]))
+        self.multistrikedetails = list(map(Details,json["multistrikedetails"]))
+        self.missdetails = list(map(Details,json["missdetails"]))
+        self.multistrikemissdetails = list(map(Details,json["multistrikemissdetails"]))
+
+class SummonsBySourceTableEntry(BySourceTableEntry):
+    """Represents an entity's information on a summons by source data table."""
+    def __init__(self, json, code, totalTime):
+        super(SummonsBySourceTableEntry,self).__init__(json, code, totalTime)
+        self.subentries = list([SummonsBySourceTableEntry(x,code,totalTime) for x in json["subentries"]]) if "subentries" in json else list()
+
+class CastsBySourceTableEntry(BySourceTableEntry):
+    """Represents an entity's information on a casts by source data table."""
+    def __init__(self, json, code, totalTime):
+        super(CastsBySourceTableEntry,self).__init__(json, code, totalTime)
+        self.subentries = list([CastsBySourceTableEntry(x,code,totalTime) for x in json["subentries"]]) if "subentries" in json else list()
+
+class Details(object):
+    """Represents a set of information on a category of 'hit' (including miss, multistrike, crit...)"""
+    def __init__(self, json):
+        self.type = json["type"]
+        self.total = json["total"] if "total" in json else 0
+        self.totalReduced = json["totalReduced"] if "totalReduced" in json else 0
+        self.count = json["count"]
+        self.countReduced = json["countReduced"] if "countReduced" in json else 0
+        self.absorbOrOverheal = json["absorbOrOverheal"] if "absorbOrOverheal" in json else 0
+        self.min = json["min"] if "min" in json else 0
+        self.max = json["max"] if "max" in json else 0
+

@@ -10,12 +10,25 @@ for l in lst:
     print(l.title + " ("+l.id+")")
 recent_report_code = lst[len(lst)-1].id
 
-table = wow_report_tables("debuffs", recent_report_code, end=4058391, key=key)
-print("DEBUFFS")
-for entry in table:
-    print(entry.name + " -> " + str(entry.totalUses))
-    print("    "+str(entry.totalUptime) + " over "+ str(len(entry.bands)))
+report = wow_get_report(recent_report_code, key=key)
+print(wow_get_report(recent_report_code, key=key).title + " "+str(report.start) + "-"+str(report.end)+" "+str(report.end-report.start))
+fights = generate_fight_list(recent_report_code, key=key)
+for f in fights:
+	#print(f.name)
+	x = 0
 
-json_rankings = wow_rankings_encounter(1866, metric="hps", server="Korgath", region="US", guild="Vitium", key=key)
-print(json_rankings["rankings"][1]["name"])
-print(wow_get_report(recent_report_code, key=key).title,)
+table = wow_report_tables("healing", recent_report_code, end=11718355, key=key, sourceid=117)
+#print(table[0].json)
+print("\nHEAL")
+for t in table:
+	print(t.name+" "+str(t.total))
+
+print("\nDPS")
+table = wow_report_tables("damage-done", recent_report_code, end=11718355, key=key, sourceid=117)
+for t in table:
+	print(t.name+" "+str(t.total))
+
+print("\nTANK")
+table = wow_report_tables("damage-taken", recent_report_code, end=11718355, key=key, sourceid=117)
+for t in table:
+	print(t.name+" "+str(t.total))
