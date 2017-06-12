@@ -61,6 +61,10 @@ class FightParticipant(object):
         self.type = json["type"]
         self.fights = FightAttendance(json["fights"])
 
+    def attended(self, fightId):
+        """Return true if char was present for given fight."""
+        return self.fights.attended(fightId)
+
 class FightParticipantPet(FightParticipant):
     """Represents an pet entity which participated in fight events."""
     def __init__(self, json, code):
@@ -95,8 +99,8 @@ class FightAttendance(object):
                     return 1
         return 0
     def attended(self, fightId):
-        """Return true if parent was present for at least one attempt of given fight."""
-        return (self.attendedFights.count(fightId)>0)
+        """Return true if parent was present for given fight."""
+        return (fightId in self.attendedFights)
 
 #Table views: "damage-done", "damage-taken", "healing", 
 #"casts", "summons", "buffs", "debuffs", "deaths", 
