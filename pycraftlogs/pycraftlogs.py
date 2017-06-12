@@ -421,6 +421,7 @@ def generate_fight_list(report_code, key=default_key, no_trash=False):
         if(fight["boss"]==0):
             if(no_trash):
                 #skip adding this
+                pass
             else:
                 fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))    
         else:
