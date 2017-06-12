@@ -388,7 +388,7 @@ def generate_guild_report_list(guild_name, server_name, server_region, start=Non
     return generate_report_list(wow_reports_guild(guild_name, server_name, server_region, start=start, end=end, key=key))
 
 
-def generate_fight_list(report_code, key=default_key):
+def generate_fight_list(report_code, key=default_key, no_trash=False):
     """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code, key=key)
     allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
@@ -419,7 +419,10 @@ def generate_fight_list(report_code, key=default_key):
                 if(boss["boss"] == fight["boss"]):
                     phases = boss["phases"]
         if(fight["boss"]==0):
-            fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))    
+            if(no_trash):
+                #skip adding this
+            else:
+                fightList.append(TrashFight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))    
         else:
             fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
