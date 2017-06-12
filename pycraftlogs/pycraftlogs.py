@@ -391,10 +391,10 @@ def generate_guild_report_list(guild_name, server_name, server_region, start=Non
 def generate_fight_list(report_code, key=default_key, no_trash=False):
     """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code, key=key)
-    allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
-    allEnemies = list(map(FightParticipant, json["enemies"], report_code)) if len(json["enemies"])>0 else list()
-    allFriendlyPets = list(map(FightParticipant, json["friendlyPets"], report_code)) if len(json["friendlyPets"])>0 else list()
-    allEnemyPets = list(map(FightParticipant, json["enemyPets"], report_code)) if len(json["enemyPets"])>0 else list()
+    allFriendlies = [FightParticipant(x, report_code) for x in json["friendlies"]] if len(json["friendlies"])>0 else list()
+    allEnemies = [FightParticipant(x, report_code) for x in json["enemies"]] if len(json["enemies"])>0 else list()
+    allFriendlyPets = [FightParticipant(x, report_code) for x in json["friendlyPets"]] if len(json["friendlyPets"])>0 else list()
+    allEnemyPets = [FightParticipant(x, report_code) for x in json["enemyPets"]] if len(json["enemyPets"])>0 else list()
     fightList = []
     for fight in json["fights"]:
         friendlies = []

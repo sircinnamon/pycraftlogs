@@ -14,7 +14,10 @@ report = wow_get_report(recent_report_code, key=key)
 print(wow_get_report(recent_report_code, key=key).title + " "+str(report.start) + "-"+str(report.end)+" "+str(report.end-report.start))
 fights = generate_fight_list(recent_report_code, key=key)
 for f in fights:
-	#print(f.name)
+	print("##"+f.name+" "+str(len(f.friendlies)))
+	for friend in f.friendlies:
+		#print(friend.name)
+		pass
 	x = 0
 
 table = wow_report_tables("healing", recent_report_code, end=11718355, key=key, sourceid=117)
