@@ -424,7 +424,7 @@ def generate_fight_list(report_code, key=default_key):
             fightList.append(Fight(fight, report_code, friendlies, enemies, friendlypets, enemypets, phases))
     return fightList
 
-def generate_player_attendence_list(report_code, key=default_key):
+def generate_player_attendance_list(report_code, key=default_key):
     """Return a list of players and attended fights contained in a given report."""
     json = wow_report_fights(report_code, key=key)
     allFriendlies = list(map(FightParticipant, json["friendlies"], report_code)) if len(json["friendlies"])>0 else list()
