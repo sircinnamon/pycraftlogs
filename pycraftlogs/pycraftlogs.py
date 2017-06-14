@@ -14,7 +14,12 @@ baseURL = "https://www.warcraftlogs.com:443/v1/"
 def wow_zones(key=default_key):
     """Request a listing of zones and return a list of Zone objects."""
     response = requests.get(baseURL + "zones?api_key=" + key)
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     zones = list()
     for entry in json_data:
         zones.append(Zone(entry))
@@ -23,7 +28,12 @@ def wow_zones(key=default_key):
 def wow_classes(key=default_key):
     """Request a listing of playable classes and return a list of _Class objects."""
     response = requests.get(baseURL + "classes?api_key=" + key)
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     classes = list()
     for entry in json_data:
         classes.append(Zone(entry))
@@ -74,7 +84,12 @@ def wow_rankings_encounter(encounter_id, metric=None, size=None,
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_rankings_character(character_name, server_name, server_region,
@@ -102,7 +117,12 @@ def wow_rankings_character(character_name, server_name, server_region,
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_parses(character_name, server_name, server_region, zone=None,
@@ -132,7 +152,12 @@ def wow_parses(character_name, server_name, server_region, zone=None,
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_reports_guild(guild_name, server_name, server_region,
@@ -151,7 +176,12 @@ def wow_reports_guild(guild_name, server_name, server_region,
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_reports_user(username, start=None, end=None, key=default_key):
@@ -169,7 +199,12 @@ def wow_reports_user(username, start=None, end=None, key=default_key):
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_get_report(code, translate=None, key=default_key):
@@ -185,7 +220,12 @@ def wow_get_report(code, translate=None, key=default_key):
     response = requests.get(url, params=params)
     print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     json_data["id"]=code
     del json_data["fights"]
     del json_data["lang"]
@@ -209,7 +249,12 @@ def wow_report_fights(code, translate=None, key=default_key):
     response = requests.get(url, params=params)
     print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_report_events(code, start=None, end=None, actorid=None,
@@ -248,7 +293,12 @@ def wow_report_events(code, start=None, end=None, actorid=None,
     response = requests.get(url, params=params)
     #print(response.url + " " + str(response.status_code))
     response.raise_for_status()
-    json_data = response.json()
+    try:
+        json_data = response.json()
+    except ValueError:
+        #print(str(ValueError.args))
+        #If the website is not a json obj, just return an empty set
+        json_data = {}
     return json_data
 
 def wow_report_tables(view, code, start=None, end=None, hostility=None, 
@@ -391,11 +441,12 @@ def generate_guild_report_list(guild_name, server_name, server_region, start=Non
 def generate_fight_list(report_code, key=default_key, no_trash=False):
     """Return a list of fight objects contained in a given report."""
     json = wow_report_fights(report_code, key=key)
-    allFriendlies = [FightParticipant(x, report_code) for x in json["friendlies"]] if len(json["friendlies"])>0 else list()
-    allEnemies = [FightParticipant(x, report_code) for x in json["enemies"]] if len(json["enemies"])>0 else list()
-    allFriendlyPets = [FightParticipant(x, report_code) for x in json["friendlyPets"]] if len(json["friendlyPets"])>0 else list()
-    allEnemyPets = [FightParticipant(x, report_code) for x in json["enemyPets"]] if len(json["enemyPets"])>0 else list()
+    allFriendlies = [FightParticipant(x, report_code) for x in json["friendlies"]] if ("friendlies" in json and len(json["friendlies"])>0) else list()
+    allEnemies = [FightParticipant(x, report_code) for x in json["enemies"]] if ("enemies" in json and len(json["enemies"])>0) else list()
+    allFriendlyPets = [FightParticipant(x, report_code) for x in json["friendlyPets"]] if ("friendlyPets" in json and len(json["friendlyPets"])>0) else list()
+    allEnemyPets = [FightParticipant(x, report_code) for x in json["enemyPets"]] if ("enemyPets" in json and len(json["enemyPets"])>0) else list()
     fightList = []
+    if("fights" not in json): json["fights"]=list()
     for fight in json["fights"]:
         friendlies = []
         enemies = []
