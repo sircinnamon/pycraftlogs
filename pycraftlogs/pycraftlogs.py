@@ -227,13 +227,13 @@ def wow_get_report(code, translate=None, key=default_key):
         #If the website is not a json obj, just return an empty set
         json_data = {}
     json_data["id"]=code
-    del json_data["fights"]
-    del json_data["lang"]
-    del json_data["friendlies"]
-    del json_data["enemies"]
-    del json_data["friendlyPets"]
-    del json_data["enemyPets"]
-    del json_data["phases"]
+    if "fights" in json_data: del json_data["fights"]
+    if "lang" in json_data: del json_data["lang"]
+    if "friendlies" in json_data: del json_data["friendlies"]
+    if "enemies" in json_data: del json_data["enemies"]
+    if "friendlyPets" in json_data: del json_data["friendlyPets"]
+    if "enemyPets" in json_data: del json_data["enemyPets"]
+    if "phases" in json_data: del json_data["phases"]
     return Report(json_data)
 
 def wow_report_fights(code, translate=None, key=default_key):
