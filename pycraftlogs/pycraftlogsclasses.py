@@ -224,8 +224,8 @@ class Gear(object):
     def __init__(self, json):
         self.json = json
         self.id = json["id"]
-        self.slot = json["slot"]
-        self.itemLevel = json["itemLevel"]
+        self.slot = json["slot"] if "slot" in json else None
+        self.itemLevel = json["itemLevel"] if "itemLevel" in json else None
         self.quality = json["quality"]
         self.icon = json["icon"]
         self.name = json["name"] if "name" in json else None
@@ -247,7 +247,8 @@ class Talent(object):
     def __init__(self, json):
         self.json = json
         self.name = json["name"]
-        self.guid = json["guid"]
+        self.id = json["guid"] if "guid" in json else None
+        self.id = json["id"] if "id" in json else None
         self.type = json["type"]
         self.abilityIcon = json["abilityIcon"]
 
@@ -476,3 +477,65 @@ class Details(object):
         self.min = json["min"] if "min" in json else 0
         self.max = json["max"] if "max" in json else 0
 
+class EncounterRankings(object):
+    """Represents an object that contains a total count and an array of EncounterRanking objects and a total number of rankings for that encounter"""
+    def __init__(self, json):
+        self.count = json["count"] if "count" in json else 0
+        self.page = json["page"] if "page" in json else 1
+        self.hasMorePages = json["hasMorePages"] if "hasMorePages" in json else False
+        self.rankings = list(map(EncounterRanking,json["rankings"])) if "rankings" in json else list()
+
+class EncounterRanking(object):
+    """Represents an object that corresponds to a single character or guild/teams ranking"""
+    def __init__(self, json):
+        self.name = json["name"] if "name" in json else None
+        self.total = json["total"] if "total" in json else None
+        self.classid = json["class"] if "class" in json else None
+        self.spec = json["spec"] if "spec" in json else None
+        self.guild = json["guild"] if "guild" in json else None
+        self.server = json["server"] if "server" in json else None
+        self.region = json["region"] if "region" in json else None
+        self.duration = json["duration"] if "duration" in json else None
+        self.startTime = json["startTime"] if "startTime" in json else None
+        self.damageTaken = json["damageTaken"] if "damageTaken" in json else None
+        self.deaths = json["deaths"] if "deaths" in json else None
+        self.itemLevel = json["itemLevel"] if "itemLevel" in json else None
+        self.patch = json["patch"] if "patch" in json else None
+        self.reportID = json["reportID"] if "reportID" in json else None
+        self.fightID = json["fightID"] if "fightID" in json else None
+        self.size = json["size"] if "size" in json else None
+        self.team = list(map(TeamMember,json["team"])) if "team" in json else list()
+
+class TeamMember(object):
+    """Represents a team member present on an individual ranking"""
+    def __init__(self, json):
+        self.name = json["name"] if "name" in json else None
+        self.classid = json["class"] if "class" in json else None
+        self.spec = json["spec"] if "spec" in json else None
+
+class CharacterRanking(object):
+    """Represents a parse of an individual character"""
+    def __init__(self, json):
+        self.rank = json["rank"] if "rank" in json else None
+        self.outOf = json["outOf"] if "outOf" in json else None
+        self.total = json["total"] if "total" in json else None
+        self.classname = json["class"] if "class" in json else None
+        self.spec = json["spec"] if "spec" in json else None
+        self.guild = json["guild"] if "guild" in json else None
+        self.duration = json["duration"] if "duration" in json else None
+        self.startTime = json["startTime"] if "startTime" in json else None
+        self.itemLevel = json["ilvlKeyOrPatch"] if "ilvlKeyOrPatch" in json else None
+        self.patch = json["patch"] if "patch" in json else None
+        self.reportID = json["reportID"] if "reportID" in json else None
+        self.fightID = json["fightID"] if "fightID" in json else None
+        self.encounterID = json["encounterID"] if "encounterID" in json else None
+        self.encounterName = json["encounterName"] if "encounterName" in json else None
+        self.difficulty = json["difficulty"] if "difficulty" in json else None
+        self.size = json["size"] if "size" in json else None
+        self.estimated = json["estimated"] if "estimated" in json else None
+        self.characterID = json["characterID"] if "characterID" in json else None
+        self.characterName = json["characterName"] if "characterName" in json else None
+        self.server = json["server"] if "server" in json else None
+        self.percentile = json["percentile"] if "percentile" in json else None
+        self.talents = list(map(Talent, json["talents"])) if "talents" in json else None
+        self.gear = list(map(Gear, json["gear"])) if "gear" in json else None
