@@ -218,7 +218,7 @@ def wow_get_report(code, translate=None, key=default_key):
     params = {"api_key":key,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    # print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     try:
         json_data = response.json()
@@ -247,7 +247,7 @@ def wow_report_fights(code, translate=None, key=default_key):
     params = {"api_key":key,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    # print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     try:
         json_data = response.json()
@@ -357,7 +357,7 @@ def wow_report_tables(view, code, start=None, end=None, hostility=None,
               "filter":filter_str,
               "translate":translate}
     response = requests.get(url, params=params)
-    print(response.url + " " + str(response.status_code))
+    # print(response.url + " " + str(response.status_code))
     response.raise_for_status()
     json_data = response.json()
     return parse_json_to_table(json_data, view, code, bysource=(params["sourceid"] is not None))
